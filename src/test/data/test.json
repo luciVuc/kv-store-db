@@ -1,0 +1,1 @@
+{"users":{"user1":{"id":"user1","fName":"John","lName":"Doe","age":30},"user2":{"id":"user2","fName":"Gigi","lName":"Duru","age":33,"peers":["user1"]}},"posts":{"post1":{"id":"post1","userId":"user1","content":"Hello"},"post2":{"id":"post2","userId":"user2","content":"Howdy!","reply":"post1"}}}
