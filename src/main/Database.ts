@@ -40,7 +40,7 @@ export interface IDatabaseProps {
  * @param {IDatabaseProps} { name, path, onChange }
  * @returns
  */
-export async function createDatabase({ name, path, onChange }: IDatabaseProps) {
+export async function initDatabase({ name, path, onChange }: IDatabaseProps) {
   let store: DataStore;
   const dataFile = join(path, `${name}.json`);
 
@@ -62,8 +62,11 @@ export async function createDatabase({ name, path, onChange }: IDatabaseProps) {
 
     watchFile(dataFile, async () => {
       store.set('', (await loadData()));
-      onChange?.({ type: 'update', key: '', value: store.get('') });
     });
+
+    if (onChange) {
+      store.addChangeListener(onChange);
+    }
 
     return {
       /**
@@ -98,7 +101,6 @@ export async function createDatabase({ name, path, onChange }: IDatabaseProps) {
       async set(key: string, value: any, merge?: boolean) {
         store.set(key, value, merge);
         await writeFile(dataFile, JSON.stringify(store.get('')));
-        onChange?.({ type: 'set', key, value: store.get(key) });
         return store.get(key);
       },
 
@@ -161,7 +163,6 @@ export async function createDatabase({ name, path, onChange }: IDatabaseProps) {
       async delete(key: string) {
         const value = store.delete(key);
         await writeFile(dataFile, JSON.stringify(store.get('')));
-        onChange?.({ type: 'delete', key, value: store.get(key) });
         return value;
       },
 
@@ -178,7 +179,6 @@ export async function createDatabase({ name, path, onChange }: IDatabaseProps) {
       async clear(key: string) {
         const value = store.clear(key);
         await writeFile(dataFile, JSON.stringify(store.get('')));
-        onChange?.({ type: 'delete', key, value: store.get(key) });
         return value;
       },
 
@@ -224,4 +224,24 @@ export async function createDatabase({ name, path, onChange }: IDatabaseProps) {
     } as IDatabase;
   })();
 }
+
+const dbsMap = new Map<string, IDatabase>();
+
+/**
+ * Create a database instance using the given data file.
+ * If the data file does not exist, it will be created.
+ *
+ * @export
+ * @param {IDatabaseProps} params
+ * @returns
+ */
+export async function createDatabase(params: IDatabaseProps) {
+  const { name, path } = params;
+  const dataFile = join(path, `${name}.json`);
+  if (!dbsMap.has(dataFile)) {
+    dbsMap.set(dataFile, await initDatabase(params));
+  }
+  return dbsMap.get(dataFile) as IDatabase;
+};
+
 export default createDatabase;

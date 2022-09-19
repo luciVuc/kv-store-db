@@ -23,6 +23,25 @@ describe('Database', () => {
     await rm(join(__dirname, 'data/none.json'));
   });
 
+  it('instance is singleton', async () => {
+    const db = await createDatabase({
+      name: 'none',
+      path: join(__dirname, 'data')
+    });
+    const db1 = await createDatabase({
+      name: 'test',
+      path: join(__dirname, 'data')
+    });
+    const db2 = await createDatabase({
+      name: 'test',
+      path: join(__dirname, 'data')
+    });
+
+    expect(db === db1).toBe(false);
+    expect(db === db2).toBe(false);
+    expect(db1 === db2).toBe(true);
+  });
+
   it('initializes with data file', async () => {
     const db = await createDatabase({
       name: 'test',

@@ -32,6 +32,13 @@ const path_1 = require("path");
         path: (0, path_1.join)(__dirname, '../data'),
         onChange: (data) => console.log(JSON.stringify(data))
     });
+    const db0 = yield (0, main_1.createDatabase)({
+        name: "testDb",
+        path: (0, path_1.join)(__dirname, '../data'),
+        onChange: (data) => console.log(JSON.stringify(data))
+    });
+    // db and db0 reference the same instance
+    console.log('* DB singleton:', db === db0);
     // set a new table with one entry
     console.log('==============================================================');
     console.log('* Adding a new table with one entry');

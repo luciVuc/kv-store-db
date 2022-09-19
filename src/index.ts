@@ -16,6 +16,15 @@ interface IUser {
     onChange: (data) => console.log(JSON.stringify(data))
   });
 
+  const db0 = await createDatabase({
+    name: "testDb",
+    path: join(__dirname, '../data'),
+    onChange: (data) => console.log(JSON.stringify(data))
+  });
+
+  // db and db0 reference the same instance
+  console.log('* DB singleton:', db === db0);
+
   // set a new table with one entry
   console.log('==============================================================');
   console.log('* Adding a new table with one entry');

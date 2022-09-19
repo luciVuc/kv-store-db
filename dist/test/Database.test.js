@@ -34,6 +34,23 @@ describe('Database', () => {
         expect(db.tables.length).toBe(0);
         yield (0, promises_1.rm)((0, path_1.join)(__dirname, 'data/none.json'));
     }));
+    it('instance is singleton', () => __awaiter(void 0, void 0, void 0, function* () {
+        const db = yield (0, main_1.createDatabase)({
+            name: 'none',
+            path: (0, path_1.join)(__dirname, 'data')
+        });
+        const db1 = yield (0, main_1.createDatabase)({
+            name: 'test',
+            path: (0, path_1.join)(__dirname, 'data')
+        });
+        const db2 = yield (0, main_1.createDatabase)({
+            name: 'test',
+            path: (0, path_1.join)(__dirname, 'data')
+        });
+        expect(db === db1).toBe(false);
+        expect(db === db2).toBe(false);
+        expect(db1 === db2).toBe(true);
+    }));
     it('initializes with data file', () => __awaiter(void 0, void 0, void 0, function* () {
         const db = yield (0, main_1.createDatabase)({
             name: 'test',

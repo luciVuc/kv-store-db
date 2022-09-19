@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createDatabase = void 0;
+exports.createDatabase = exports.initDatabase = void 0;
 const path_1 = require("path");
 const fs_1 = require("fs");
 const promises_1 = require("fs/promises");
@@ -22,7 +22,7 @@ const DataStore_1 = require("./DataStore");
  * @param {IDatabaseProps} { name, path, onChange }
  * @returns
  */
-function createDatabase({ name, path, onChange }) {
+function initDatabase({ name, path, onChange }) {
     return __awaiter(this, void 0, void 0, function* () {
         let store;
         const dataFile = (0, path_1.join)(path, `${name}.json`);
@@ -42,8 +42,10 @@ function createDatabase({ name, path, onChange }) {
             store = new DataStore_1.DataStore({ data });
             (0, fs_1.watchFile)(dataFile, () => __awaiter(this, void 0, void 0, function* () {
                 store.set('', (yield loadData()));
-                onChange === null || onChange === void 0 ? void 0 : onChange({ type: 'update', key: '', value: store.get('') });
             }));
+            if (onChange) {
+                store.addChangeListener(onChange);
+            }
             return {
                 /**
                  * Sets a (new or existing) value by key in the store.
@@ -78,7 +80,6 @@ function createDatabase({ name, path, onChange }) {
                     return __awaiter(this, void 0, void 0, function* () {
                         store.set(key, value, merge);
                         yield (0, promises_1.writeFile)(dataFile, JSON.stringify(store.get('')));
-                        onChange === null || onChange === void 0 ? void 0 : onChange({ type: 'set', key, value: store.get(key) });
                         return store.get(key);
                     });
                 },
@@ -144,7 +145,6 @@ function createDatabase({ name, path, onChange }) {
                     return __awaiter(this, void 0, void 0, function* () {
                         const value = store.delete(key);
                         yield (0, promises_1.writeFile)(dataFile, JSON.stringify(store.get('')));
-                        onChange === null || onChange === void 0 ? void 0 : onChange({ type: 'delete', key, value: store.get(key) });
                         return value;
                     });
                 },
@@ -162,7 +162,6 @@ function createDatabase({ name, path, onChange }) {
                     return __awaiter(this, void 0, void 0, function* () {
                         const value = store.clear(key);
                         yield (0, promises_1.writeFile)(dataFile, JSON.stringify(store.get('')));
-                        onChange === null || onChange === void 0 ? void 0 : onChange({ type: 'delete', key, value: store.get(key) });
                         return value;
                     });
                 },
@@ -210,5 +209,26 @@ function createDatabase({ name, path, onChange }) {
         }))();
     });
 }
+exports.initDatabase = initDatabase;
+const dbsMap = new Map();
+/**
+ * Create a database instance using the given data file.
+ * If the data file does not exist, it will be created.
+ *
+ * @export
+ * @param {IDatabaseProps} params
+ * @returns
+ */
+function createDatabase(params) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const { name, path } = params;
+        const dataFile = (0, path_1.join)(path, `${name}.json`);
+        if (!dbsMap.has(dataFile)) {
+            dbsMap.set(dataFile, yield initDatabase(params));
+        }
+        return dbsMap.get(dataFile);
+    });
+}
 exports.createDatabase = createDatabase;
+;
 exports.default = createDatabase;

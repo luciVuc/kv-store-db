@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.DataStore = exports.DataTableMap = void 0;
+const events_1 = require("events");
 const DataTypeMap_1 = require("./DataTypeMap");
 /**
  * A Data Table Map. It maps table names to "table" objects.
@@ -26,7 +27,7 @@ class DataStore {
      * @param {IDataStoreProps} { data } Initialization properties.
      * @param {object} props.data  A JSON object containing initial data as `tables`,
      * `table entries` and `data fields`. A typical format looks like:
-     * ```json
+     * ```js
      * {
      *   tableName1: {
      *     rowId1: {
@@ -53,6 +54,7 @@ class DataStore {
      * @memberof DataStore
      */
     constructor({ data }) {
+        this._eventEmitter = new events_1.EventEmitter();
         this._tables = new DataTableMap();
         this.deserialize(data);
     }
@@ -94,6 +96,42 @@ class DataStore {
             });
         }
         return this;
+    }
+    /**
+     * Adds the 'onChange' `listener` to the listeners array.
+     * No checks are made to see if the `listener` has already been added.
+     * @param onChange change event listener
+     */
+    addChangeListener(onChange) {
+        if (!this.changeListeners.includes(onChange)) {
+            this._eventEmitter.addListener('change', onChange);
+        }
+        return this;
+    }
+    /**
+     * Removes the specified 'change' `listener` from the listener array.
+     * @param onChange
+     */
+    removeChangeListener(onChange) {
+        this._eventEmitter.removeListener('change', onChange);
+        return this;
+    }
+    /**
+     * Synchronously calls all registered 'change' listeners, in the order they were registered,
+     * passing the supplied arguments to each, and returns `true` if there were any 'change' event
+     * listeners, or `false` otherwise.
+     * @param data
+     */
+    emitChange(data) {
+        this._eventEmitter.emit('change', data);
+    }
+    /**
+     * Returns an array containing all 'change' listeners.
+     * @readonly
+     * @memberof DataStore
+     */
+    get changeListeners() {
+        return this._eventEmitter.listeners('change');
     }
     /**
      * Sets a (new or existing) value by key in the store.
@@ -140,6 +178,7 @@ class DataStore {
             entry.set(typeField, value);
             table[entryId] = entry;
             this._tables.set(tableName, table);
+            this.emitChange({ type: 'set', key, value: this.get(key) });
         }
         else if (entryId && tableName && value instanceof Object) {
             // set the type by id
@@ -147,6 +186,7 @@ class DataStore {
             const entry = table[entryId] && merge ? new DataTypeMap_1.DataTypeMap(Object.assign(Object.assign({}, (_e = table[entryId]) === null || _e === void 0 ? void 0 : _e.toJSON()), value), entryId) : new DataTypeMap_1.DataTypeMap(Object.assign({}, value), entryId);
             table[entryId] = entry;
             this._tables.set(tableName, table);
+            this.emitChange({ type: 'set', key, value: this.get(key) });
         }
         else if (tableName && value instanceof Object) {
             // set the table
@@ -154,9 +194,11 @@ class DataStore {
             const entry = new DataTypeMap_1.DataTypeMap(Object.assign({}, value), (value === null || value === void 0 ? void 0 : value.id) || (value === null || value === void 0 ? void 0 : value.uuid));
             table[entry.uuid] = entry;
             this._tables.set(tableName, table);
+            this.emitChange({ type: 'set', key, value: this.get(key) });
         }
         else if (value instanceof Object) {
             this.deserialize(value);
+            this.emitChange({ type: 'set', key, value: this.get(key) });
         }
         return this;
     }
@@ -274,20 +316,25 @@ class DataStore {
             (_b = keys[1]) === null || _b === void 0 ? void 0 : _b.trim(),
             (_d = (_c = keys[2]) === null || _c === void 0 ? void 0 : _c.replace('/', '_')) === null || _d === void 0 ? void 0 : _d.trim()
         ];
+        let ret = false;
         if (typeField && entryId && tableName) {
             // delete the field
             const table = this._tables.get(tableName);
-            return !!((_e = table === null || table === void 0 ? void 0 : table[entryId]) === null || _e === void 0 ? void 0 : _e.delete(typeField));
+            ret = !!((_e = table === null || table === void 0 ? void 0 : table[entryId]) === null || _e === void 0 ? void 0 : _e.delete(typeField));
         }
         else if (entryId && tableName) {
             // delete the type by id
             const table = this._tables.get(tableName);
-            return !!(table === null || table === void 0 ? true : delete table[entryId]);
+            ret = !!(table === null || table === void 0 ? true : delete table[entryId]);
         }
         else if (tableName) {
             // delete the table
-            return this._tables.delete(tableName);
+            ret = this._tables.delete(tableName);
         }
+        if (ret) {
+            this.emitChange({ type: 'delete', key, value: this.get(key) });
+        }
+        return ret;
     }
     /**
      * Clears the table or table record identified by key in the store.
@@ -309,15 +356,18 @@ class DataStore {
         ];
         if (!tableName.length || tableName === '*') {
             this._tables.clear();
+            this.emitChange({ type: 'delete', key, value: this.get(key) });
         }
         else if (entryId && tableName) {
             // clear the type by id
             const table = this._tables.get(tableName);
             (_c = table === null || table === void 0 ? void 0 : table[entryId]) === null || _c === void 0 ? void 0 : _c.clear();
+            this.emitChange({ type: 'delete', key, value: this.get(key) });
         }
         else if (tableName) {
             // clear the table
             this._tables.set(tableName, {});
+            this.emitChange({ type: 'delete', key, value: this.get(key) });
         }
         return this;
     }
