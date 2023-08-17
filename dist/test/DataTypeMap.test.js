@@ -30,8 +30,8 @@ describe('DataTypeMap', () => {
     it('initializes with data args and default UUID', () => __awaiter(void 0, void 0, void 0, function* () {
         const type = new main_1.DataTypeMap(sample_json_1.users.user1, sample_json_1.users.user1.id);
         expect(type.get('id')).toEqual('user1');
-        expect(type.get('fName')).toEqual('John');
-        expect(type.get('lName')).toEqual('Doe');
+        expect(type.get('fName')).toEqual('Luke');
+        expect(type.get('lName')).toEqual('Skywalker');
         expect(type.get('age')).toEqual(30);
         expect(type.toJSON()).toEqual(sample_json_1.users.user1);
         expect(type.uuid).toEqual(type.get('id'));
@@ -39,8 +39,8 @@ describe('DataTypeMap', () => {
     it('can change initial values of data fields', () => __awaiter(void 0, void 0, void 0, function* () {
         const type = new main_1.DataTypeMap(sample_json_1.users.user1, sample_json_1.users.user1.id);
         expect(type.get('id')).toEqual('user1');
-        expect(type.get('fName')).toEqual('John');
-        expect(type.get('lName')).toEqual('Doe');
+        expect(type.get('fName')).toEqual('Luke');
+        expect(type.get('lName')).toEqual('Skywalker');
         expect(type.get('age')).toEqual(30);
         expect(type.toJSON()).toEqual(sample_json_1.users.user1);
         expect(type.uuid).toEqual(type.get('id'));
@@ -90,13 +90,13 @@ describe('DataTypeMap', () => {
         expect(keysItr.next().value).toEqual('age');
         const valuesItr = type.values();
         expect(valuesItr.next().value).toEqual('user1');
-        expect(valuesItr.next().value).toEqual('John');
-        expect(valuesItr.next().value).toEqual('Doe');
+        expect(valuesItr.next().value).toEqual('Luke');
+        expect(valuesItr.next().value).toEqual('Skywalker');
         expect(valuesItr.next().value).toEqual(30);
         const entries = type.entries();
         expect(entries.next().value).toEqual(['id', 'user1']);
-        expect(entries.next().value).toEqual(['fName', 'John']);
-        expect(entries.next().value).toEqual(['lName', 'Doe']);
+        expect(entries.next().value).toEqual(['fName', 'Luke']);
+        expect(entries.next().value).toEqual(['lName', 'Skywalker']);
         expect(entries.next().value).toEqual(['age', 30]);
     }));
 });

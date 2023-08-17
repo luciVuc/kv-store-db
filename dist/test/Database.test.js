@@ -68,16 +68,16 @@ describe('Database', () => {
         expect(yield db.table('users')).toMatchObject({
             'user1': new main_1.DataTypeMap({
                 "id": "user1",
-                "fName": "John",
-                "lName": "Doe",
+                "fName": "Luke",
+                "lName": "Skywalker",
                 "age": 30
             }, 'user1')
         });
         expect(yield db.table('users')).toMatchObject({
             'user2': new main_1.DataTypeMap({
                 "id": "user2",
-                "fName": "Gigi",
-                "lName": "Duru",
+                "fName": "Obi Wan",
+                "lName": "Kenobi",
                 "age": 33,
                 "peers": [
                     "user1"
@@ -106,13 +106,13 @@ describe('Database', () => {
             path: (0, path_1.join)(__dirname, 'data')
         });
         expect(yield db.get('users/user1/id')).toEqual('user1');
-        expect(yield db.get('users/user1/fName')).toEqual('John');
-        expect(yield db.get('users/user1/lName')).toEqual('Doe');
+        expect(yield db.get('users/user1/fName')).toEqual('Luke');
+        expect(yield db.get('users/user1/lName')).toEqual('Skywalker');
         expect(yield db.get('users/user1/age')).toEqual(30);
         expect(yield db.get('users/user1/fullName')).toBeUndefined();
         expect(yield db.get('users/user2/id')).toEqual('user2');
-        expect(yield db.get('users/user2/fName')).toEqual('Gigi');
-        expect(yield db.get('users/user2/lName')).toEqual('Duru');
+        expect(yield db.get('users/user2/fName')).toEqual('Obi Wan');
+        expect(yield db.get('users/user2/lName')).toEqual('Kenobi');
         expect(yield db.get('users/user2/age')).toEqual(33);
     }));
     it('gets records by keys', () => __awaiter(void 0, void 0, void 0, function* () {
@@ -122,14 +122,14 @@ describe('Database', () => {
         });
         expect(yield db.get('users/user1')).toMatchObject({
             "id": "user1",
-            "fName": "John",
-            "lName": "Doe",
+            "fName": "Luke",
+            "lName": "Skywalker",
             "age": 30
         });
         expect(yield db.get('users/user2')).toMatchObject({
             "id": "user2",
-            "fName": "Gigi",
-            "lName": "Duru",
+            "fName": "Obi Wan",
+            "lName": "Kenobi",
             "age": 33,
             "peers": [
                 "user1"
@@ -156,14 +156,14 @@ describe('Database', () => {
         expect(yield db.get('users')).toMatchObject({
             'user1': {
                 "id": "user1",
-                "fName": "John",
-                "lName": "Doe",
+                "fName": "Luke",
+                "lName": "Skywalker",
                 "age": 30
             },
             'user2': {
                 "id": "user2",
-                "fName": "Gigi",
-                "lName": "Duru",
+                "fName": "Obi Wan",
+                "lName": "Kenobi",
                 "age": 33,
                 "peers": [
                     "user1"
@@ -199,15 +199,15 @@ describe('Database', () => {
             path: (0, path_1.join)(__dirname, 'data')
         });
         expect(yield db.get('users/user1/id')).toEqual('user1');
-        expect(yield db.get('users/user1/fName')).toEqual('John');
-        expect(yield db.get('users/user1/lName')).toEqual('Doe');
+        expect(yield db.get('users/user1/fName')).toEqual('Luke');
+        expect(yield db.get('users/user1/lName')).toEqual('Skywalker');
         expect(yield db.get('users/user1/age')).toEqual(30);
         yield db.set('users/user1/id', 'USER1');
         yield db.set('users/user1/age', 31);
         yield db.set('users/USER1/age', 32);
         expect(yield db.get('users/user1/id')).toEqual('USER1');
-        expect(yield db.get('users/user1/fName')).toEqual('John');
-        expect(yield db.get('users/user1/lName')).toEqual('Doe');
+        expect(yield db.get('users/user1/fName')).toEqual('Luke');
+        expect(yield db.get('users/user1/lName')).toEqual('Skywalker');
         expect(yield db.get('users/user1/age')).toEqual(31);
         expect(yield db.get('users/USER1/id')).toBeUndefined();
         expect(yield db.get('users/USER1/fName')).toBeUndefined();
@@ -223,14 +223,14 @@ describe('Database', () => {
         });
         expect(yield db.get('users/user1')).toMatchObject({
             "id": "user1",
-            "fName": "John",
-            "lName": "Doe",
+            "fName": "Luke",
+            "lName": "Skywalker",
             "age": 30
         });
         expect(yield db.get('users/user2')).toMatchObject({
             "id": "user2",
-            "fName": "Gigi",
-            "lName": "Duru",
+            "fName": "Obi Wan",
+            "lName": "Kenobi",
             "age": 33,
             "peers": [
                 "user1"
@@ -353,14 +353,14 @@ describe('Database', () => {
         expect(yield db.get('users')).toMatchObject({
             'user1': {
                 "id": "user1",
-                "fName": "John",
-                "lName": "Doe",
+                "fName": "Luke",
+                "lName": "Skywalker",
                 "age": 30
             },
             'user2': {
                 "id": "user2",
-                "fName": "Gigi",
-                "lName": "Duru",
+                "fName": "Obi Wan",
+                "lName": "Kenobi",
                 "age": 33,
                 "peers": [
                     "user1"
@@ -389,14 +389,14 @@ describe('Database', () => {
         expect(yield db.get('users')).toMatchObject({
             'user1': {
                 "id": "user1",
-                "fName": "John",
-                "lName": "Doe",
+                "fName": "Luke",
+                "lName": "Skywalker",
                 "age": 30
             },
             'user2': {
                 "id": "user2",
-                "fName": "Gigi",
-                "lName": "Duru",
+                "fName": "Obi Wan",
+                "lName": "Kenobi",
                 "age": 33,
                 "peers": [
                     "user1"
@@ -463,8 +463,8 @@ describe('Database', () => {
             path: (0, path_1.join)(__dirname, 'data')
         });
         expect(yield db.get('users/user1/id')).toEqual('user1');
-        expect(yield db.get('users/user1/fName')).toEqual('John');
-        expect(yield db.get('users/user1/lName')).toEqual('Doe');
+        expect(yield db.get('users/user1/fName')).toEqual('Luke');
+        expect(yield db.get('users/user1/lName')).toEqual('Skywalker');
         expect(yield db.get('users/user1/age')).toEqual(30);
         expect(yield db.get('users/user1/fullName')).toBeUndefined();
         expect(yield db.has('users/user1/id')).toBe(true);
@@ -474,8 +474,8 @@ describe('Database', () => {
         expect(yield db.has('users/user1/fullName')).toBe(false);
         yield db.delete('users/user1/age');
         expect(yield db.get('users/user1/id')).toEqual('user1');
-        expect(yield db.get('users/user1/fName')).toEqual('John');
-        expect(yield db.get('users/user1/lName')).toEqual('Doe');
+        expect(yield db.get('users/user1/fName')).toEqual('Luke');
+        expect(yield db.get('users/user1/lName')).toEqual('Skywalker');
         expect(yield db.get('users/user1/age')).toBeUndefined();
         expect(yield db.get('users/user1/fullName')).toBeUndefined();
         expect(yield db.has('users/user1/id')).toBe(true);
@@ -544,14 +544,14 @@ describe('Database', () => {
         });
         expect(yield db.get('users/user1')).toMatchObject({
             "id": "user1",
-            "fName": "John",
-            "lName": "Doe",
+            "fName": "Luke",
+            "lName": "Skywalker",
             "age": 30
         });
         expect(yield db.get('users/user2')).toMatchObject({
             "id": "user2",
-            "fName": "Gigi",
-            "lName": "Duru",
+            "fName": "Obi Wan",
+            "lName": "Kenobi",
             "age": 33,
             "peers": [
                 "user1"
@@ -563,8 +563,8 @@ describe('Database', () => {
         expect(yield db.get('users/user1')).toMatchObject({});
         expect(yield db.get('users/user2')).toMatchObject({
             "id": "user2",
-            "fName": "Gigi",
-            "lName": "Duru",
+            "fName": "Obi Wan",
+            "lName": "Kenobi",
             "age": 33,
             "peers": [
                 "user1"
@@ -582,14 +582,14 @@ describe('Database', () => {
         expect(yield db.get('users')).toMatchObject({
             'user1': {
                 "id": "user1",
-                "fName": "John",
-                "lName": "Doe",
+                "fName": "Luke",
+                "lName": "Skywalker",
                 "age": 30
             },
             'user2': {
                 "id": "user2",
-                "fName": "Gigi",
-                "lName": "Duru",
+                "fName": "Obi Wan",
+                "lName": "Kenobi",
                 "age": 33,
                 "peers": [
                     "user1"
@@ -637,8 +637,8 @@ describe('Database', () => {
         });
         expect(yield db.entries('users/user1')).toMatchObject([
             ["id", "user1"],
-            ["fName", "John"],
-            ["lName", "Doe"],
+            ["fName", "Luke"],
+            ["lName", "Skywalker"],
             ["age", 30]
         ]);
         expect(yield db.entries('likes/likes1')).toBeUndefined();
@@ -652,16 +652,16 @@ describe('Database', () => {
             [
                 'user1', {
                     "id": "user1",
-                    "fName": "John",
-                    "lName": "Doe",
+                    "fName": "Luke",
+                    "lName": "Skywalker",
                     "age": 30
                 }
             ],
             [
                 'user2', {
                     "id": "user2",
-                    "fName": "Gigi",
-                    "lName": "Duru",
+                    "fName": "Obi Wan",
+                    "lName": "Kenobi",
                     "age": 33,
                     "peers": [
                         "user1"

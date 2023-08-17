@@ -29,16 +29,16 @@ describe('DataStore', () => {
         expect(store.table('users')).toMatchObject({
             'user1': new main_1.DataTypeMap({
                 "id": "user1",
-                "fName": "John",
-                "lName": "Doe",
+                "fName": "Luke",
+                "lName": "Skywalker",
                 "age": 30
             }, 'user1')
         });
         expect(store.table('users')).toMatchObject({
             'user2': new main_1.DataTypeMap({
                 "id": "user2",
-                "fName": "Gigi",
-                "lName": "Duru",
+                "fName": "Obi Wan",
+                "lName": "Kenobi",
                 "age": 33,
                 "peers": [
                     "user1"
@@ -64,27 +64,27 @@ describe('DataStore', () => {
     it('gets values by keys', () => __awaiter(void 0, void 0, void 0, function* () {
         const store = new main_1.DataStore({ data: sample_json_1.default });
         expect(store.get('users/user1/id')).toEqual('user1');
-        expect(store.get('users/user1/fName')).toEqual('John');
-        expect(store.get('users/user1/lName')).toEqual('Doe');
+        expect(store.get('users/user1/fName')).toEqual('Luke');
+        expect(store.get('users/user1/lName')).toEqual('Skywalker');
         expect(store.get('users/user1/age')).toEqual(30);
         expect(store.get('users/user1/fullName')).toBeUndefined();
         expect(store.get('users/user2/id')).toEqual('user2');
-        expect(store.get('users/user2/fName')).toEqual('Gigi');
-        expect(store.get('users/user2/lName')).toEqual('Duru');
+        expect(store.get('users/user2/fName')).toEqual('Obi Wan');
+        expect(store.get('users/user2/lName')).toEqual('Kenobi');
         expect(store.get('users/user2/age')).toEqual(33);
     }));
     it('gets records by keys', () => __awaiter(void 0, void 0, void 0, function* () {
         const store = new main_1.DataStore({ data: sample_json_1.default });
         expect(store.get('users/user1')).toMatchObject({
             "id": "user1",
-            "fName": "John",
-            "lName": "Doe",
+            "fName": "Luke",
+            "lName": "Skywalker",
             "age": 30
         });
         expect(store.get('users/user2')).toMatchObject({
             "id": "user2",
-            "fName": "Gigi",
-            "lName": "Duru",
+            "fName": "Obi Wan",
+            "lName": "Kenobi",
             "age": 33,
             "peers": [
                 "user1"
@@ -108,14 +108,14 @@ describe('DataStore', () => {
         expect(store.get('users')).toMatchObject({
             'user1': {
                 "id": "user1",
-                "fName": "John",
-                "lName": "Doe",
+                "fName": "Luke",
+                "lName": "Skywalker",
                 "age": 30
             },
             'user2': {
                 "id": "user2",
-                "fName": "Gigi",
-                "lName": "Duru",
+                "fName": "Obi Wan",
+                "lName": "Kenobi",
                 "age": 33,
                 "peers": [
                     "user1"
@@ -145,15 +145,15 @@ describe('DataStore', () => {
     it('sets values by keys', () => __awaiter(void 0, void 0, void 0, function* () {
         const store = new main_1.DataStore({ data: sample_json_1.default });
         expect(store.get('users/user1/id')).toEqual('user1');
-        expect(store.get('users/user1/fName')).toEqual('John');
-        expect(store.get('users/user1/lName')).toEqual('Doe');
+        expect(store.get('users/user1/fName')).toEqual('Luke');
+        expect(store.get('users/user1/lName')).toEqual('Skywalker');
         expect(store.get('users/user1/age')).toEqual(30);
         store.set('users/user1/id', 'USER1');
         store.set('users/user1/age', 31);
         store.set('users/USER1/age', 32);
         expect(store.get('users/user1/id')).toEqual('USER1');
-        expect(store.get('users/user1/fName')).toEqual('John');
-        expect(store.get('users/user1/lName')).toEqual('Doe');
+        expect(store.get('users/user1/fName')).toEqual('Luke');
+        expect(store.get('users/user1/lName')).toEqual('Skywalker');
         expect(store.get('users/user1/age')).toEqual(31);
         expect(store.get('users/USER1/id')).toBeUndefined();
         expect(store.get('users/USER1/fName')).toBeUndefined();
@@ -164,14 +164,14 @@ describe('DataStore', () => {
         const store = new main_1.DataStore({ data: sample_json_1.default });
         expect(store.get('users/user1')).toMatchObject({
             "id": "user1",
-            "fName": "John",
-            "lName": "Doe",
+            "fName": "Luke",
+            "lName": "Skywalker",
             "age": 30
         });
         expect(store.get('users/user2')).toMatchObject({
             "id": "user2",
-            "fName": "Gigi",
-            "lName": "Duru",
+            "fName": "Obi Wan",
+            "lName": "Kenobi",
             "age": 33,
             "peers": [
                 "user1"
@@ -279,14 +279,14 @@ describe('DataStore', () => {
         expect(store.get('users')).toMatchObject({
             'user1': {
                 "id": "user1",
-                "fName": "John",
-                "lName": "Doe",
+                "fName": "Luke",
+                "lName": "Skywalker",
                 "age": 30
             },
             'user2': {
                 "id": "user2",
-                "fName": "Gigi",
-                "lName": "Duru",
+                "fName": "Obi Wan",
+                "lName": "Kenobi",
                 "age": 33,
                 "peers": [
                     "user1"
@@ -315,14 +315,14 @@ describe('DataStore', () => {
         expect(store.get('users')).toMatchObject({
             'user1': {
                 "id": "user1",
-                "fName": "John",
-                "lName": "Doe",
+                "fName": "Luke",
+                "lName": "Skywalker",
                 "age": 30
             },
             'user2': {
                 "id": "user2",
-                "fName": "Gigi",
-                "lName": "Duru",
+                "fName": "Obi Wan",
+                "lName": "Kenobi",
                 "age": 33,
                 "peers": [
                     "user1"
@@ -375,8 +375,8 @@ describe('DataStore', () => {
     it('deletes values by keys', () => __awaiter(void 0, void 0, void 0, function* () {
         const store = new main_1.DataStore({ data: sample_json_1.default });
         expect(store.get('users/user1/id')).toEqual('user1');
-        expect(store.get('users/user1/fName')).toEqual('John');
-        expect(store.get('users/user1/lName')).toEqual('Doe');
+        expect(store.get('users/user1/fName')).toEqual('Luke');
+        expect(store.get('users/user1/lName')).toEqual('Skywalker');
         expect(store.get('users/user1/age')).toEqual(30);
         expect(store.get('users/user1/fullName')).toBeUndefined();
         expect(store.has('users/user1/id')).toBe(true);
@@ -386,8 +386,8 @@ describe('DataStore', () => {
         expect(store.has('users/user1/fullName')).toBe(false);
         store.delete('users/user1/age');
         expect(store.get('users/user1/id')).toEqual('user1');
-        expect(store.get('users/user1/fName')).toEqual('John');
-        expect(store.get('users/user1/lName')).toEqual('Doe');
+        expect(store.get('users/user1/fName')).toEqual('Luke');
+        expect(store.get('users/user1/lName')).toEqual('Skywalker');
         expect(store.get('users/user1/age')).toBeUndefined();
         expect(store.get('users/user1/fullName')).toBeUndefined();
         expect(store.has('users/user1/id')).toBe(true);
@@ -426,14 +426,14 @@ describe('DataStore', () => {
         const store = new main_1.DataStore({ data: sample_json_1.default });
         expect(store.get('users/user1')).toMatchObject({
             "id": "user1",
-            "fName": "John",
-            "lName": "Doe",
+            "fName": "Luke",
+            "lName": "Skywalker",
             "age": 30
         });
         expect(store.get('users/user2')).toMatchObject({
             "id": "user2",
-            "fName": "Gigi",
-            "lName": "Duru",
+            "fName": "Obi Wan",
+            "lName": "Kenobi",
             "age": 33,
             "peers": [
                 "user1"
@@ -445,8 +445,8 @@ describe('DataStore', () => {
         expect(store.get('users/user1')).toMatchObject({});
         expect(store.get('users/user2')).toMatchObject({
             "id": "user2",
-            "fName": "Gigi",
-            "lName": "Duru",
+            "fName": "Obi Wan",
+            "lName": "Kenobi",
             "age": 33,
             "peers": [
                 "user1"
@@ -459,14 +459,14 @@ describe('DataStore', () => {
         expect(store.get('users')).toMatchObject({
             'user1': {
                 "id": "user1",
-                "fName": "John",
-                "lName": "Doe",
+                "fName": "Luke",
+                "lName": "Skywalker",
                 "age": 30
             },
             'user2': {
                 "id": "user2",
-                "fName": "Gigi",
-                "lName": "Duru",
+                "fName": "Obi Wan",
+                "lName": "Kenobi",
                 "age": 33,
                 "peers": [
                     "user1"
@@ -510,14 +510,14 @@ describe('DataStore', () => {
         expect(store.get('users')).toMatchObject({
             'user1': {
                 "id": "user1",
-                "fName": "John",
-                "lName": "Doe",
+                "fName": "Luke",
+                "lName": "Skywalker",
                 "age": 30
             },
             'user2': {
                 "id": "user2",
-                "fName": "Gigi",
-                "lName": "Duru",
+                "fName": "Obi Wan",
+                "lName": "Kenobi",
                 "age": 33,
                 "peers": [
                     "user1"
@@ -548,8 +548,8 @@ describe('DataStore', () => {
         const store = new main_1.DataStore({ data: sample_json_1.default });
         expect(store.entries('users/user1')).toMatchObject([
             ["id", "user1"],
-            ["fName", "John"],
-            ["lName", "Doe"],
+            ["fName", "Luke"],
+            ["lName", "Skywalker"],
             ["age", 30]
         ]);
         expect(store.entries('likes/likes1')).toBeUndefined();
@@ -560,16 +560,16 @@ describe('DataStore', () => {
             [
                 'user1', {
                     "id": "user1",
-                    "fName": "John",
-                    "lName": "Doe",
+                    "fName": "Luke",
+                    "lName": "Skywalker",
                     "age": 30
                 }
             ],
             [
                 'user2', {
                     "id": "user2",
-                    "fName": "Gigi",
-                    "lName": "Duru",
+                    "fName": "Obi Wan",
+                    "lName": "Kenobi",
                     "age": 33,
                     "peers": [
                         "user1"
