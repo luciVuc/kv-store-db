@@ -2,14 +2,14 @@
   "users": {
     "user1": {
       "id": "user1",
-      "fName": "John",
-      "lName": "Doe",
+      "fName": "Luke",
+      "lName": "Skywalker",
       "age": 30
     },
     "user2": {
       "id": "user2",
-      "fName": "Gigi",
-      "lName": "Duru",
+      "fName": "Obi Wan",
+      "lName": "Kenobi",
       "age": 33,
       "peers": [
         "user1"

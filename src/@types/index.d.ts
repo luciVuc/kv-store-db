@@ -161,3 +161,32 @@ declare interface IDatabase {
    */
   get dataFile(): string;
 };
+
+/**
+ * Database init properties
+ * 
+ * @export
+ * @interface IDatabaseProps
+ */
+declare interface IDatabaseProps {
+  /**
+   * The name of the data file
+   *
+   * @type {string}
+   * @memberof IDatabaseProps
+   */
+  name: string;
+  /**
+   * The location of the data file
+   *
+   * @type {string}
+   * @memberof IDatabaseProps
+   */
+  path: string;
+  /**
+   * Callback for data changes
+   *
+   * @memberof IDatabaseProps
+   */
+  onChange?: (data: { type: 'set' | 'update' | 'delete'; key: string; value: any; }) => void;
+}

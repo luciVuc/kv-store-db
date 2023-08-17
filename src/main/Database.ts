@@ -4,35 +4,6 @@ import { access, readFile, writeFile } from 'fs/promises';
 import { DataStore } from './DataStore';
 
 /**
- * Database init properties
- * 
- * @export
- * @interface IDatabaseProps
- */
-export interface IDatabaseProps {
-  /**
-   * The name of the data file
-   *
-   * @type {string}
-   * @memberof IDatabaseProps
-   */
-  name: string;
-  /**
-   * The location of the data file
-   *
-   * @type {string}
-   * @memberof IDatabaseProps
-   */
-  path: string;
-  /**
-   * Callback for data changes
-   *
-   * @memberof IDatabaseProps
-   */
-  onChange?: (data: { type: 'set' | 'update' | 'delete'; key: string; value: any; }) => void;
-}
-
-/**
  * Create a database instance using the given data file.
  * If the data file does not exist, it will be created.
  *
