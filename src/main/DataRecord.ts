@@ -1,26 +1,26 @@
 import { v4 as uuidV4 } from 'uuid';
 
 /**
- * A Map of key-value fields with a unique identifier property, `uuid`,
- * which, if not specifically provided by client, it will be auto-generated.
+ * A map of fields (key-value pairs) referenced by a unique identifier (`uuid`)
+ * which, if not provided by the client, it will be generated automatically.
  *
  * @export
- * @class DataTypeMap
+ * @class DataRecord
  * @extends {Map<string, any>}
  */
-export class DataTypeMap extends Map<string, any> {
-  private _uuid: string;
+export class DataRecord extends Map<string, any> {
+  #uuid: string;
 
   /**
-   * Creates an instance of DataTypeMap.
+   * Creates an instance of DataRecord.
    *
    * @param {TDataRecord?} [fields] An object containing the key-value fields.
    * @param {string} [uuid] An optional unique identifier for this Data Type instance.
-   * @memberof DataTypeMap
+   * @memberof DataRecord
    */
   constructor(fields?: TDataRecord, uuid?: string) {
     super();
-    this._uuid = uuid || uuidV4();
+    this.#uuid = uuid || uuidV4();
     if (fields) {
       Object.entries(fields).forEach(([key, value]) => {
         this.set(key, value);
@@ -32,7 +32,7 @@ export class DataTypeMap extends Map<string, any> {
    * Returns the entries as JSON.
    *
    * @returns {TDataRecord}
-   * @memberof DataTypeMap
+   * @memberof DataRecord
    */
   toJSON(): TDataRecord {
     return Object.fromEntries(this);
@@ -42,7 +42,7 @@ export class DataTypeMap extends Map<string, any> {
    * Returns the UUID.
    */
   get uuid() {
-    return this._uuid;
+    return this.#uuid;
   }
 }
-export default DataTypeMap;
+export default DataRecord;

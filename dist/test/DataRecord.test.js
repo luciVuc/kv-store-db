@@ -11,24 +11,24 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const main_1 = require("../main");
 const sample_json_1 = require("./data/sample.json");
-describe('DataTypeMap', () => {
+describe('DataRecord', () => {
     it('initializes with default args', () => __awaiter(void 0, void 0, void 0, function* () {
-        const type = new main_1.DataTypeMap();
+        const type = new main_1.DataRecord();
         expect(type.toJSON()).toEqual({});
         expect(type.uuid.length).toBeGreaterThan(0);
     }));
     it('initializes with no data args but given UUID', () => __awaiter(void 0, void 0, void 0, function* () {
-        const type = new main_1.DataTypeMap({}, '12345');
+        const type = new main_1.DataRecord({}, '12345');
         expect(type.toJSON()).toEqual({});
         expect(type.uuid).toEqual('12345');
     }));
     it('initializes with data args and default UUID', () => __awaiter(void 0, void 0, void 0, function* () {
-        const type = new main_1.DataTypeMap(sample_json_1.users.user1);
+        const type = new main_1.DataRecord(sample_json_1.users.user1);
         expect(type.toJSON()).toEqual(sample_json_1.users.user1);
         expect(type.uuid.length).toBeGreaterThan(0);
     }));
     it('initializes with data args and default UUID', () => __awaiter(void 0, void 0, void 0, function* () {
-        const type = new main_1.DataTypeMap(sample_json_1.users.user1, sample_json_1.users.user1.id);
+        const type = new main_1.DataRecord(sample_json_1.users.user1, sample_json_1.users.user1.id);
         expect(type.get('id')).toEqual('user1');
         expect(type.get('fName')).toEqual('Luke');
         expect(type.get('lName')).toEqual('Skywalker');
@@ -37,7 +37,7 @@ describe('DataTypeMap', () => {
         expect(type.uuid).toEqual(type.get('id'));
     }));
     it('can change initial values of data fields', () => __awaiter(void 0, void 0, void 0, function* () {
-        const type = new main_1.DataTypeMap(sample_json_1.users.user1, sample_json_1.users.user1.id);
+        const type = new main_1.DataRecord(sample_json_1.users.user1, sample_json_1.users.user1.id);
         expect(type.get('id')).toEqual('user1');
         expect(type.get('fName')).toEqual('Luke');
         expect(type.get('lName')).toEqual('Skywalker');
@@ -53,14 +53,14 @@ describe('DataTypeMap', () => {
         expect(type.get('age')).toEqual(74);
     }));
     it('can add a new data fields', () => __awaiter(void 0, void 0, void 0, function* () {
-        const type = new main_1.DataTypeMap(sample_json_1.users.user1, sample_json_1.users.user1.id);
+        const type = new main_1.DataRecord(sample_json_1.users.user1, sample_json_1.users.user1.id);
         expect(type.toJSON()).toEqual(sample_json_1.users.user1);
         expect(type.uuid).toEqual(type.get('id'));
         type.set('tmp', 123);
         expect(type.toJSON()).toEqual(Object.assign(Object.assign({}, sample_json_1.users.user1), { tmp: 123 }));
     }));
     it('can remove a data fields', () => __awaiter(void 0, void 0, void 0, function* () {
-        const type = new main_1.DataTypeMap(sample_json_1.users.user1, sample_json_1.users.user1.id);
+        const type = new main_1.DataRecord(sample_json_1.users.user1, sample_json_1.users.user1.id);
         expect(type.toJSON()).toEqual(sample_json_1.users.user1);
         expect(type.uuid).toEqual(type.get('id'));
         type.delete('age');
@@ -71,7 +71,7 @@ describe('DataTypeMap', () => {
         });
     }));
     it('can clear the data fields', () => __awaiter(void 0, void 0, void 0, function* () {
-        const type = new main_1.DataTypeMap(sample_json_1.users.user1, sample_json_1.users.user1.id);
+        const type = new main_1.DataRecord(sample_json_1.users.user1, sample_json_1.users.user1.id);
         expect(type.toJSON()).toEqual(sample_json_1.users.user1);
         expect(type.uuid).toEqual(type.get('id'));
         type.clear();
@@ -79,7 +79,7 @@ describe('DataTypeMap', () => {
         expect(type.uuid).toEqual(sample_json_1.users.user1.id);
     }));
     it('supports other Map functionality', () => __awaiter(void 0, void 0, void 0, function* () {
-        const type = new main_1.DataTypeMap(sample_json_1.users.user1, sample_json_1.users.user1.id);
+        const type = new main_1.DataRecord(sample_json_1.users.user1, sample_json_1.users.user1.id);
         expect(type.toJSON()).toEqual(sample_json_1.users.user1);
         expect(type.uuid).toEqual(type.get('id'));
         expect(type.size).toEqual(4);

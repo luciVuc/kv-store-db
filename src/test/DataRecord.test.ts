@@ -1,27 +1,27 @@
-import { DataTypeMap } from '../main';
+import { DataRecord } from '../main';
 import { users } from './data/sample.json';
 
-describe('DataTypeMap', () => {
+describe('DataRecord', () => {
   it('initializes with default args', async () => {
-    const type = new DataTypeMap();
+    const type = new DataRecord();
     expect(type.toJSON()).toEqual({});
     expect(type.uuid.length).toBeGreaterThan(0);
   });
 
   it('initializes with no data args but given UUID', async () => {
-    const type = new DataTypeMap({}, '12345');
+    const type = new DataRecord({}, '12345');
     expect(type.toJSON()).toEqual({});
     expect(type.uuid).toEqual('12345');
   });
 
   it('initializes with data args and default UUID', async () => {
-    const type = new DataTypeMap(users.user1);
+    const type = new DataRecord(users.user1);
     expect(type.toJSON()).toEqual(users.user1);
     expect(type.uuid.length).toBeGreaterThan(0);
   });
 
   it('initializes with data args and default UUID', async () => {
-    const type = new DataTypeMap(users.user1, users.user1.id);
+    const type = new DataRecord(users.user1, users.user1.id);
 
     expect(type.get('id')).toEqual('user1');
     expect(type.get('fName')).toEqual('Luke');
@@ -32,7 +32,7 @@ describe('DataTypeMap', () => {
   });
 
   it('can change initial values of data fields', async () => {
-    const type = new DataTypeMap(users.user1, users.user1.id);
+    const type = new DataRecord(users.user1, users.user1.id);
 
     expect(type.get('id')).toEqual('user1');
     expect(type.get('fName')).toEqual('Luke');
@@ -52,7 +52,7 @@ describe('DataTypeMap', () => {
   });
 
   it('can add a new data fields', async () => {
-    const type = new DataTypeMap(users.user1, users.user1.id);
+    const type = new DataRecord(users.user1, users.user1.id);
 
     expect(type.toJSON()).toEqual(users.user1);
     expect(type.uuid).toEqual(type.get('id'));
@@ -64,7 +64,7 @@ describe('DataTypeMap', () => {
 
 
   it('can remove a data fields', async () => {
-    const type = new DataTypeMap(users.user1, users.user1.id);
+    const type = new DataRecord(users.user1, users.user1.id);
 
     expect(type.toJSON()).toEqual(users.user1);
     expect(type.uuid).toEqual(type.get('id'));
@@ -79,7 +79,7 @@ describe('DataTypeMap', () => {
   });
 
   it('can clear the data fields', async () => {
-    const type = new DataTypeMap(users.user1, users.user1.id);
+    const type = new DataRecord(users.user1, users.user1.id);
 
     expect(type.toJSON()).toEqual(users.user1);
     expect(type.uuid).toEqual(type.get('id'));
@@ -92,7 +92,7 @@ describe('DataTypeMap', () => {
 
 
   it('supports other Map functionality', async () => {
-    const type = new DataTypeMap(users.user1, users.user1.id);
+    const type = new DataRecord(users.user1, users.user1.id);
 
     expect(type.toJSON()).toEqual(users.user1);
     expect(type.uuid).toEqual(type.get('id'));

@@ -49,25 +49,25 @@ function initDatabase({ name, path, onChange }) {
             return {
                 /**
                  * Sets a (new or existing) value by key in the store.
-                 * The key is a string in a format like `tableName/:rowId/:fieldName`,
-                 * where the `tableName` is the identifier of a table in the store,
-                 * while the `rowId` identifies a specific record (entry) in the
-                 * data table, and the `fieldName` identifies a specific field of the
-                 * specific record (entry) in the data table.
-                 * Both `rowId` and `fieldName` are optional, and if not provided,
-                 * the key is assumed to indicate the name of the table. In this case,
+                 * The key is a string in a format like `collectionName/:recId/:fieldName`,
+                 * where the `collectionName` is the identifier of a collection in the store,
+                 * while the `recId` identifies a specific record (entry) in the
+                 * data collection, and the `fieldName` identifies a specific field of the
+                 * specific record (entry) in the data collection.
+                 * Both `recId` and `fieldName` are optional, and if not provided,
+                 * the key is assumed to indicate the name of the collection. In this case,
                  * the value is expected to be an object that contains the new data entries
-                 * for the table (a `TDataTableEntry` compatible object).
-                 * However, if the key contains both `tableName` and `rowId` components,
-                 * it is assumed to refer to a particular entry (record) in the table.
-                 * In this case the value must be a data table entry (a object compatible
+                 * for the collection (a `TDataCollectionEntry` compatible object).
+                 * However, if the key contains both `collectionName` and `recId` components,
+                 * it is assumed to refer to a particular record (entry) in the collection.
+                 * In this case the value must be a data collection entry (a object compatible
                  * with a `Map` of `TDataRecord` items).
                  * If the key contains all three components, it is assumed to refer to a
-                 * specific data field of the given record (entry) in the data table.
+                 * specific data field of the given record (entry) in the data collection.
                  * The `merge` flag is optional as well, and it serves when setting
-                 * entries (records) in a table, (e.g. using the `tableName/:rowId` key variant),
+                 * entries (records) in a collection, (e.g. using the `collectionName/:recId` key variant),
                  * to indicate whether to merge the new fields with the existing fields
-                 * of the identified record in the table, or to replace all its existing
+                 * of the identified record in the collection, or to replace all its existing
                  * fields with the new ones. By default `merge` is `false`, which means
                  * that the new data fields passed as `value`  replace the existing ones.
                  *
@@ -84,20 +84,20 @@ function initDatabase({ name, path, onChange }) {
                     });
                 },
                 /**
-                 * Gets (retrieves) the data of the table, record or the field identified
+                 * Gets (retrieves) the data of the collection, record or the field identified
                  * by the given key in the store.
-                 * The key is a string in this `tableName/:rowId/:fieldName` format,
-                 * where the `tableName` is required and is the table identifier.
-                 * The `rowId`, which is optional, is the identifier of the record (row)
-                 * in the table, and the `fieldName`, optional as well, is the identifier
-                 * of a particular field of the given record (row) in the table.
-                 * If the given key only contains the `tableName` it returns all the data
-                 * from the table identified. If the given key only contains the `tableName` and
-                 * the `rowId` it returns the data of the identified row (record) in the table.
-                 * If the given key only all three components, the `tableName`, the `rowId` and
-                 * `fieldName`it returns the value of the named field in the identified row
-                 * (record) in the table.
-                 * If the key does not identify any table, record or field in the store,
+                 * The key is a string in this `collectionName/:recId/:fieldName` format,
+                 * where the `collectionName` is required and is the collection identifier.
+                 * The `recId`, which is optional, is the identifier of the record (entry)
+                 * in the collection, and the `fieldName`, optional as well, is the identifier
+                 * of a particular field of the given record (entry) in the collection.
+                 * If the given key only contains the `collectionName` it returns all the data
+                 * from the collection identified. If the given key only contains the `collectionName` and
+                 * the `recId` it returns the data of the identified record (entry) in the collection.
+                 * If the given key only all three components, the `collectionName`, the `recId` and
+                 * `fieldName`it returns the value of the named field in the identified entry
+                 * (record) in the collection.
+                 * If the key does not identify any collection, record or field in the store,
                  * it returns `undefined`.
                  *
                  * @param {string} key
@@ -109,14 +109,14 @@ function initDatabase({ name, path, onChange }) {
                     });
                 },
                 /**
-                 * Returns `true` if the store has a table, a table record or a table
+                 * Returns `true` if the store has a collection, a collection record or a collection
                  * record field that is identified by the given key.
-                 * The key is a string in this `tableName/:rowId/:fieldName` format,
-                 * where the `tableName` is required and is the table identifier.
-                 * The `rowId`, which is optional, is the identifier of the record (row)
-                 * in the table, and the `fieldName`, optional as well, is the identifier
-                 * of a particular field of the given record (row) in the table.
-                 * If the key does not identify any table, record or field in the store,
+                 * The key is a string in this `collectionName/:recId/:fieldName` format,
+                 * where the `collectionName` is required and is the collection identifier.
+                 * The `recId`, which is optional, is the identifier of the record (entry)
+                 * in the collection, and the `fieldName`, optional as well, is the identifier
+                 * of a particular field of the given record (entry) in the collection.
+                 * If the key does not identify any collection, record or field in the store,
                  * it returns `false`.
                  *
                  * @param {string} key
@@ -128,14 +128,14 @@ function initDatabase({ name, path, onChange }) {
                     });
                 },
                 /**
-                 * Deletes from the store the table, record or data field specified by the key,
+                 * Deletes from the store the collection, record or data field specified by the key,
                  * and returns `true` to indicate that the operation is successful.
-                 * The key is a string in this `tableName/:rowId/:fieldName` format,
-                 * where the `tableName` is required and is the table identifier.
-                 * The `rowId`, which is optional, is the identifier of the record (row)
-                 * in the table, and the `fieldName`, optional as well, is the identifier
-                 * of a particular field of the given record (row) in the table.
-                 * If the key does not identify any table, record or field in the store,
+                 * The key is a string in this `collectionName/:recId/:fieldName` format,
+                 * where the `collectionName` is required and is the collection identifier.
+                 * The `recId`, which is optional, is the identifier of the record (entry)
+                 * in the collection, and the `fieldName`, optional as well, is the identifier
+                 * of a particular field of the given record (entry) in the collection.
+                 * If the key does not identify any collection, record or field in the store,
                  * it returns `false`, indicating that nothing was deleted.
                  *
                  * @param {string} key
@@ -149,11 +149,11 @@ function initDatabase({ name, path, onChange }) {
                     });
                 },
                 /**
-                 * Clears the table or table record identified by key in the store.
-                 * The key is a string in a format like `tableName/:rowId`,
-                 * where the `tableName` is the identifier of a table in the store,
-                 * while the `rowId` identifies a specific record (entry) in the
-                 * data table.
+                 * Clears the collection or collection record identified by key in the store.
+                 * The key is a string in a format like `collectionName/:recId`,
+                 * where the `collectionName` is the identifier of a collection in the store,
+                 * while the `recId` identifies a specific record (entry) in the
+                 * data collection.
                  *
                  * @param {string} key
                  * @returns
@@ -166,12 +166,12 @@ function initDatabase({ name, path, onChange }) {
                     });
                 },
                 /**
-                 * Returns an iterator with all entries of the table or record identified
+                 * Returns an iterator with all entries of the collection or record identified
                  * by the key in the store.
-                 * The key is a string in a format like `tableName/:rowId`,
-                 * where the `tableName` is the identifier of a table in the store,
-                 * while the `rowId` identifies a specific record (entry) in the
-                 * data table.
+                 * The key is a string in a format like `collectionName/:recId`,
+                 * where the `collectionName` is the identifier of a collection in the store,
+                 * while the `recId` identifies a specific record (entry) in the
+                 * data collection.
                  *
                  * @param {string} key
                  * @returns
@@ -182,22 +182,22 @@ function initDatabase({ name, path, onChange }) {
                     });
                 },
                 /**
-                 * Returns the data table object with the given name, or `undefined`
-                 * if the table does not exist in the store.
+                 * Returns the data collection object with the given name, or `undefined`
+                 * if the collection does not exist in the store.
                  *
                  * @param {string} name
                  * @returns
                  */
-                table(name) {
+                collection(name) {
                     return __awaiter(this, void 0, void 0, function* () {
-                        return store.table(name);
+                        return store.collection(name);
                     });
                 },
                 /**
-                 * Returns an array containing the names of all data tables in the store.
+                 * Returns an array containing the names of all data collections in the store.
                  */
-                get tables() {
-                    return store.tables;
+                get collections() {
+                    return store.collections;
                 },
                 /**
                  * Returns the name and path of the data file.

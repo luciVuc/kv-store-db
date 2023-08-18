@@ -1,23 +1,23 @@
-import { DataStore, DataTypeMap } from '../main';
+import { DataStore, DataRecord } from '../main';
 import sampleData from './data/sample.json';
 
 describe('DataStore', () => {
   it('initializes with default args', async () => {
     const store = new DataStore({});
-    expect(store.tables).toEqual([]);
+    expect(store.collections).toEqual([]);
   });
 
   it('initializes with sample data args', async () => {
     const store = new DataStore({ data: sampleData });
-    expect(store.tables).toEqual(['users', 'posts']);
+    expect(store.collections).toEqual(['users', 'posts']);
   });
 
-  it('gets the tables', async () => {
+  it('gets the collections', async () => {
     const store = new DataStore({ data: sampleData });
-    expect(store.tables).toEqual(['users', 'posts']);
+    expect(store.collections).toEqual(['users', 'posts']);
 
-    expect(store.table('users')).toMatchObject({
-      'user1': new DataTypeMap({
+    expect(store.collection('users')).toMatchObject({
+      'user1': new DataRecord({
         "id": "user1",
         "fName": "Luke",
         "lName": "Skywalker",
@@ -25,8 +25,8 @@ describe('DataStore', () => {
       }, 'user1')
     });
 
-    expect(store.table('users')).toMatchObject({
-      'user2': new DataTypeMap({
+    expect(store.collection('users')).toMatchObject({
+      'user2': new DataRecord({
         "id": "user2",
         "fName": "Obi Wan",
         "lName": "Kenobi",
@@ -37,16 +37,16 @@ describe('DataStore', () => {
       }, 'user2')
     });
 
-    expect(store.table('posts')).toMatchObject({
-      "post1": new DataTypeMap({
+    expect(store.collection('posts')).toMatchObject({
+      "post1": new DataRecord({
         "id": "post1",
         "userId": "user1",
         "content": "Hello"
       }, 'post1')
     });
 
-    expect(store.table('posts')).toMatchObject({
-      "post2": new DataTypeMap({
+    expect(store.collection('posts')).toMatchObject({
+      "post2": new DataRecord({
         "id": "post2",
         "userId": "user2",
         "content": "Howdy!",
@@ -102,7 +102,7 @@ describe('DataStore', () => {
     expect(store.get('posts/post3')).toBeUndefined();
   });
 
-  it('gets tables by keys', async () => {
+  it('gets collections by keys', async () => {
     const store = new DataStore({ data: sampleData });
 
     expect(store.get('users')).toMatchObject({
@@ -311,7 +311,7 @@ describe('DataStore', () => {
     });
   });
 
-  it('sets tables by keys', async () => {
+  it('sets collections by keys', async () => {
     const store = new DataStore({ data: sampleData });
 
     expect(store.get('users')).toMatchObject({
@@ -345,7 +345,7 @@ describe('DataStore', () => {
       }
     });
     expect(store.get('likes')).toMatchObject({});
-    expect(store.tables).toMatchObject(['users', 'posts']);
+    expect(store.collections).toMatchObject(['users', 'posts']);
 
     store.set('likes/like1', {
       'id': 'like1',
@@ -388,7 +388,7 @@ describe('DataStore', () => {
         'post': 'post1'
       }
     });
-    expect(store.tables).toMatchObject(['users', 'posts', 'likes']);
+    expect(store.collections).toMatchObject(['users', 'posts', 'likes']);
   });
 
   it('has values by keys', async () => {
@@ -411,7 +411,7 @@ describe('DataStore', () => {
     expect(store.has('posts/post3')).toBe(false);
   });
 
-  it('has tables by keys', async () => {
+  it('has collections by keys', async () => {
     const store = new DataStore({ data: sampleData });
 
     expect(store.has('users')).toBe(true);
@@ -468,7 +468,7 @@ describe('DataStore', () => {
     expect(store.has('posts/post3')).toBe(false);
   });
 
-  it('deletes tables by keys', async () => {
+  it('deletes collections by keys', async () => {
     const store = new DataStore({ data: sampleData });
 
     expect(store.has('users')).toBe(true);
@@ -519,7 +519,7 @@ describe('DataStore', () => {
     expect(store.has('likes/like1')).toBe(false);
   });
 
-  it('clears tables by keys', async () => {
+  it('clears collections by keys', async () => {
     const store = new DataStore({ data: sampleData });
 
     expect(store.get('users')).toMatchObject({
@@ -629,7 +629,7 @@ describe('DataStore', () => {
     expect(store.entries('likes/likes1')).toBeUndefined();
   });
 
-  it('gets table entries by keys', async () => {
+  it('gets collection entries by keys', async () => {
     const store = new DataStore({ data: sampleData });
 
     expect(store.entries('users')).toMatchObject([

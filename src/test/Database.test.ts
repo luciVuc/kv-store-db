@@ -1,6 +1,6 @@
 import { copyFile } from 'node:fs';
 import { rm } from 'node:fs/promises';
-import { createDatabase, DataTypeMap } from '../main';
+import { createDatabase, DataRecord } from '../main';
 import sampleData from './data/sample.json';
 import { join } from 'path';
 
@@ -19,7 +19,7 @@ describe('Database', () => {
       path: join(__dirname, 'data')
     });
     expect(db).not.toBeUndefined();
-    expect(db.tables.length).toBe(0);
+    expect(db.collections.length).toBe(0);
     await rm(join(__dirname, 'data/none.json'));
   });
 
@@ -48,18 +48,18 @@ describe('Database', () => {
       path: join(__dirname, 'data')
     });
     expect(db).not.toBeUndefined();
-    expect(db.tables).toMatchObject(['users', 'posts']);
+    expect(db.collections).toMatchObject(['users', 'posts']);
   });
 
-  it('gets the tables', async () => {
+  it('gets the collections', async () => {
     const db = await createDatabase({
       name: 'test',
       path: join(__dirname, 'data')
     });
-    expect(db.tables).toEqual(['users', 'posts']);
+    expect(db.collections).toEqual(['users', 'posts']);
 
-    expect(await db.table('users')).toMatchObject({
-      'user1': new DataTypeMap({
+    expect(await db.collection('users')).toMatchObject({
+      'user1': new DataRecord({
         "id": "user1",
         "fName": "Luke",
         "lName": "Skywalker",
@@ -67,8 +67,8 @@ describe('Database', () => {
       }, 'user1')
     });
 
-    expect(await db.table('users')).toMatchObject({
-      'user2': new DataTypeMap({
+    expect(await db.collection('users')).toMatchObject({
+      'user2': new DataRecord({
         "id": "user2",
         "fName": "Obi Wan",
         "lName": "Kenobi",
@@ -79,16 +79,16 @@ describe('Database', () => {
       }, 'user2')
     });
 
-    expect(await db.table('posts')).toMatchObject({
-      "post1": new DataTypeMap({
+    expect(await db.collection('posts')).toMatchObject({
+      "post1": new DataRecord({
         "id": "post1",
         "userId": "user1",
         "content": "Hello"
       }, 'post1')
     });
 
-    expect(await db.table('posts')).toMatchObject({
-      "post2": new DataTypeMap({
+    expect(await db.collection('posts')).toMatchObject({
+      "post2": new DataRecord({
         "id": "post2",
         "userId": "user2",
         "content": "Howdy!",
@@ -150,7 +150,7 @@ describe('Database', () => {
     expect(await db.get('posts/post3')).toBeUndefined();
   });
 
-  it('gets tables by keys', async () => {
+  it('gets collections by keys', async () => {
     const db = await createDatabase({
       name: 'test',
       path: join(__dirname, 'data')
@@ -389,7 +389,7 @@ describe('Database', () => {
     await db.set('', sampleData);
   });
 
-  it('sets tables by keys', async () => {
+  it('sets collections by keys', async () => {
     const db = await createDatabase({
       name: 'test',
       path: join(__dirname, 'data')
@@ -426,7 +426,7 @@ describe('Database', () => {
       }
     });
     expect(await db.get('likes')).toMatchObject({});
-    expect(await db.tables).toMatchObject(['users', 'posts']);
+    expect(await db.collections).toMatchObject(['users', 'posts']);
 
     await db.set('likes/like1', {
       'id': 'like1',
@@ -469,7 +469,7 @@ describe('Database', () => {
         'post': 'post1'
       }
     });
-    expect(await db.tables).toMatchObject(['users', 'posts', 'likes']);
+    expect(await db.collections).toMatchObject(['users', 'posts', 'likes']);
 
     await db.clear('');
     await db.set('', sampleData);
@@ -501,7 +501,7 @@ describe('Database', () => {
     expect(await db.has('posts/post3')).toBe(false);
   });
 
-  it('has tables by keys', async () => {
+  it('has collections by keys', async () => {
     const db = await createDatabase({
       name: 'test',
       path: join(__dirname, 'data')
@@ -573,7 +573,7 @@ describe('Database', () => {
     await db.set('', sampleData);
   });
 
-  it('deletes tables by keys', async () => {
+  it('deletes collections by keys', async () => {
     const db = await createDatabase({
       name: 'test',
       path: join(__dirname, 'data')
@@ -656,7 +656,7 @@ describe('Database', () => {
     await db.set('', sampleData);
   });
 
-  it('clears tables by keys', async () => {
+  it('clears collections by keys', async () => {
     const db = await createDatabase({
       name: 'test',
       path: join(__dirname, 'data')
@@ -732,7 +732,7 @@ describe('Database', () => {
     expect(await db.entries('likes/likes1')).toBeUndefined();
   });
 
-  it('gets table entries by keys', async () => {
+  it('gets collection entries by keys', async () => {
     const db = await createDatabase({
       name: 'test',
       path: join(__dirname, 'data')

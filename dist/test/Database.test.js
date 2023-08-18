@@ -31,7 +31,7 @@ describe('Database', () => {
             path: (0, path_1.join)(__dirname, 'data')
         });
         expect(db).not.toBeUndefined();
-        expect(db.tables.length).toBe(0);
+        expect(db.collections.length).toBe(0);
         yield (0, promises_1.rm)((0, path_1.join)(__dirname, 'data/none.json'));
     }));
     it('instance is singleton', () => __awaiter(void 0, void 0, void 0, function* () {
@@ -57,24 +57,24 @@ describe('Database', () => {
             path: (0, path_1.join)(__dirname, 'data')
         });
         expect(db).not.toBeUndefined();
-        expect(db.tables).toMatchObject(['users', 'posts']);
+        expect(db.collections).toMatchObject(['users', 'posts']);
     }));
-    it('gets the tables', () => __awaiter(void 0, void 0, void 0, function* () {
+    it('gets the collections', () => __awaiter(void 0, void 0, void 0, function* () {
         const db = yield (0, main_1.createDatabase)({
             name: 'test',
             path: (0, path_1.join)(__dirname, 'data')
         });
-        expect(db.tables).toEqual(['users', 'posts']);
-        expect(yield db.table('users')).toMatchObject({
-            'user1': new main_1.DataTypeMap({
+        expect(db.collections).toEqual(['users', 'posts']);
+        expect(yield db.collection('users')).toMatchObject({
+            'user1': new main_1.DataRecord({
                 "id": "user1",
                 "fName": "Luke",
                 "lName": "Skywalker",
                 "age": 30
             }, 'user1')
         });
-        expect(yield db.table('users')).toMatchObject({
-            'user2': new main_1.DataTypeMap({
+        expect(yield db.collection('users')).toMatchObject({
+            'user2': new main_1.DataRecord({
                 "id": "user2",
                 "fName": "Obi Wan",
                 "lName": "Kenobi",
@@ -84,15 +84,15 @@ describe('Database', () => {
                 ]
             }, 'user2')
         });
-        expect(yield db.table('posts')).toMatchObject({
-            "post1": new main_1.DataTypeMap({
+        expect(yield db.collection('posts')).toMatchObject({
+            "post1": new main_1.DataRecord({
                 "id": "post1",
                 "userId": "user1",
                 "content": "Hello"
             }, 'post1')
         });
-        expect(yield db.table('posts')).toMatchObject({
-            "post2": new main_1.DataTypeMap({
+        expect(yield db.collection('posts')).toMatchObject({
+            "post2": new main_1.DataRecord({
                 "id": "post2",
                 "userId": "user2",
                 "content": "Howdy!",
@@ -148,7 +148,7 @@ describe('Database', () => {
         });
         expect(yield db.get('posts/post3')).toBeUndefined();
     }));
-    it('gets tables by keys', () => __awaiter(void 0, void 0, void 0, function* () {
+    it('gets collections by keys', () => __awaiter(void 0, void 0, void 0, function* () {
         const db = yield (0, main_1.createDatabase)({
             name: 'test',
             path: (0, path_1.join)(__dirname, 'data')
@@ -345,7 +345,7 @@ describe('Database', () => {
         yield db.clear('');
         yield db.set('', sample_json_1.default);
     }));
-    it('sets tables by keys', () => __awaiter(void 0, void 0, void 0, function* () {
+    it('sets collections by keys', () => __awaiter(void 0, void 0, void 0, function* () {
         const db = yield (0, main_1.createDatabase)({
             name: 'test',
             path: (0, path_1.join)(__dirname, 'data')
@@ -381,7 +381,7 @@ describe('Database', () => {
             }
         });
         expect(yield db.get('likes')).toMatchObject({});
-        expect(yield db.tables).toMatchObject(['users', 'posts']);
+        expect(yield db.collections).toMatchObject(['users', 'posts']);
         yield db.set('likes/like1', {
             'id': 'like1',
             'post': 'post1'
@@ -422,7 +422,7 @@ describe('Database', () => {
                 'post': 'post1'
             }
         });
-        expect(yield db.tables).toMatchObject(['users', 'posts', 'likes']);
+        expect(yield db.collections).toMatchObject(['users', 'posts', 'likes']);
         yield db.clear('');
         yield db.set('', sample_json_1.default);
     }));
@@ -448,7 +448,7 @@ describe('Database', () => {
         expect(yield db.has('posts/post1')).toBe(true);
         expect(yield db.has('posts/post3')).toBe(false);
     }));
-    it('has tables by keys', () => __awaiter(void 0, void 0, void 0, function* () {
+    it('has collections by keys', () => __awaiter(void 0, void 0, void 0, function* () {
         const db = yield (0, main_1.createDatabase)({
             name: 'test',
             path: (0, path_1.join)(__dirname, 'data')
@@ -506,7 +506,7 @@ describe('Database', () => {
         yield db.clear('');
         yield db.set('', sample_json_1.default);
     }));
-    it('deletes tables by keys', () => __awaiter(void 0, void 0, void 0, function* () {
+    it('deletes collections by keys', () => __awaiter(void 0, void 0, void 0, function* () {
         const db = yield (0, main_1.createDatabase)({
             name: 'test',
             path: (0, path_1.join)(__dirname, 'data')
@@ -574,7 +574,7 @@ describe('Database', () => {
         yield db.clear('');
         yield db.set('', sample_json_1.default);
     }));
-    it('clears tables by keys', () => __awaiter(void 0, void 0, void 0, function* () {
+    it('clears collections by keys', () => __awaiter(void 0, void 0, void 0, function* () {
         const db = yield (0, main_1.createDatabase)({
             name: 'test',
             path: (0, path_1.join)(__dirname, 'data')
@@ -643,7 +643,7 @@ describe('Database', () => {
         ]);
         expect(yield db.entries('likes/likes1')).toBeUndefined();
     }));
-    it('gets table entries by keys', () => __awaiter(void 0, void 0, void 0, function* () {
+    it('gets collection entries by keys', () => __awaiter(void 0, void 0, void 0, function* () {
         const db = yield (0, main_1.createDatabase)({
             name: 'test',
             path: (0, path_1.join)(__dirname, 'data')
