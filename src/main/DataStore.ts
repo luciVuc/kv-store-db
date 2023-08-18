@@ -1,25 +1,25 @@
 import { EventEmitter } from 'events';
-import { DataTypeMap } from './DataTypeMap';
+import { DataRecord } from './DataRecord';
 
 /**
- * A Data Table Map. It maps table names to "table" objects.
+ * A Data Collection Map. It maps data collection names to data collection objects.
  *
  * @export
- * @class DataTableMap
- * @extends {Map<string, TDataTableEntry>}
+ * @class DataCollectionMap
+ * @extends {Map<string, TDataCollectionEntry>}
  */
-export class DataTableMap extends Map<string, TDataTableEntry> { };
+export class DataCollectionMap extends Map<string, TDataCollectionEntry> { };
 
 /**
- * A map of data table objects, with functionality to perform CRUD
+ * A map of data collection objects, with functionality to perform CRUD
  * operations on them or their content data.
  *
  * @export
  * @class DataStore
  */
 export class DataStore {
-  private _eventEmitter = new EventEmitter();
-  private _tables = new DataTableMap();
+  #eventEmitter = new EventEmitter();
+  #collections = new DataCollectionMap();
 
   /**
    * Returns the entire store data as a JSON object.
@@ -30,10 +30,10 @@ export class DataStore {
    */
   private serialize() {
     const data = {} as any;
-    this.tables.forEach((tbl, x) => {
+    this.collections.forEach((tbl, x) => {
       data[tbl] = {};
-      Object.entries(this._tables.get(tbl) || {} as TDataTableEntry).forEach(([key, value]) => {
-        data[tbl][key] = value instanceof DataTypeMap ? value.toJSON() : value;
+      Object.entries(this.#collections.get(tbl) || {} as TDataCollectionEntry).forEach(([key, value]) => {
+        data[tbl][key] = value instanceof DataRecord ? value.toJSON() : value;
       });
     });
     return data as object;
@@ -41,7 +41,7 @@ export class DataStore {
 
   /**
    * Deserializes the data given as JSON object, and uses it
-   * to initialize or update the internal `tables` map.
+   * to initialize or update the internal `collections` map.
    *
    * @private
    * @param {TDataStoreContent} [data]
@@ -51,10 +51,10 @@ export class DataStore {
   private deserialize(data?: TDataStoreContent) {
     if (data) {
       // TODO: improve performance
-      Object.entries(data).forEach(([tableName, table]) => {
-        Object.entries(table).forEach(([entryId, entry]) => {
+      Object.entries(data).forEach(([collectionName, collection]) => {
+        Object.entries(collection).forEach(([entryId, entry]) => {
           Object.entries(entry).forEach(([fieldName, value]) => {
-            this.set(`${tableName}/${entryId}/${fieldName}`, value);
+            this.set(`${collectionName}/${entryId}/${fieldName}`, value);
           });
         });
       });
@@ -65,24 +65,24 @@ export class DataStore {
   /**
    *Creates an instance of DataStore.
    * @param {IDataStoreProps} { data } Initialization properties.
-   * @param {object} props.data  A JSON object containing initial data as `tables`,
-   * `table entries` and `data fields`. A typical format looks like:
+   * @param {object} props.data  A JSON object containing initial data as `collections`,
+   * `collection entries` and `data fields`. A typical format looks like:
    * ```js
    * {
-   *   tableName1: {
-   *     rowId1: {
+   *   collectionName1: {
+   *     recId1: {
    *       fieldName1: value1,
    *       fieldName2: value2,
    *       ...
    *       fieldNameN: valueN,
    *     },
-   *     rowId2: {
+   *     recId2: {
    *       ...
    *     },
    *     ...
    *   },
-   *   tableName2: {
-   *     rowId: {
+   *   collectionName2: {
+   *     recId: {
    *       fieldName: value,
    *       ...
    *     },
@@ -104,7 +104,7 @@ export class DataStore {
    */
   addChangeListener(onChange: (data: { type: 'set' | 'update' | 'delete'; key: string; value: any; }) => void) {
     if (!this.changeListeners.includes(onChange)) {
-      this._eventEmitter.addListener('change', onChange);
+      this.#eventEmitter.addListener('change', onChange);
     }
     return this;
   }
@@ -114,7 +114,7 @@ export class DataStore {
    * @param onChange 
    */
   removeChangeListener(onChange: (data: { type: 'set' | 'update' | 'delete'; key: string; value: any; }) => void) {
-    this._eventEmitter.removeListener('change', onChange);
+    this.#eventEmitter.removeListener('change', onChange);
     return this;
   }
 
@@ -125,7 +125,7 @@ export class DataStore {
    * @param data 
    */
   emitChange(data: { type: 'set' | 'update' | 'delete'; key: string; value: any; }) {
-    this._eventEmitter.emit('change', data);
+    this.#eventEmitter.emit('change', data);
   }
 
   /**
@@ -134,30 +134,30 @@ export class DataStore {
    * @memberof DataStore
    */
   get changeListeners() {
-    return this._eventEmitter.listeners('change');
+    return this.#eventEmitter.listeners('change');
   }
 
   /**
    * Sets a (new or existing) value by key in the store.
-   * The key is a string in a format like `tableName/:rowId/:fieldName`,
-   * where the `tableName` is the identifier of a table in the store,
-   * while the `rowId` identifies a specific record (entry) in the
-   * data table, and the `fieldName` identifies a specific field of the
-   * specific record (entry) in the data table.
-   * Both `rowId` and `fieldName` are optional, and if not provided,
-   * the key is assumed to indicate the name of the table. In this case,
+   * The key is a string in a format like `collectionName/:recId/:fieldName`,
+   * where the `collectionName` is the identifier of a collection in the store,
+   * while the `recId` identifies a specific record (entry) in the
+   * data collection, and the `fieldName` identifies a specific field of the
+   * specific record (entry) in the data collection.
+   * Both `recId` and `fieldName` are optional, and if not provided,
+   * the key is assumed to indicate the name of the collection. In this case,
    * the value is expected to be an object that contains the new data entries
-   * for the table (a `TDataTableEntry` compatible object).
-   * However, if the key contains both `tableName` and `rowId` components,
-   * it is assumed to refer to a particular entry (record) in the table.
-   * In this case the value must be a data table entry (a object compatible
+   * for the collection (a `TDataCollectionEntry` compatible object).
+   * However, if the key contains both `collectionName` and `recId` components,
+   * it is assumed to refer to a particular record (entry) in the collection.
+   * In this case the value must be a data collection entry (a object compatible
    * with a `Map` of `TDataRecord` items).
    * If the key contains all three components, it is assumed to refer to a
-   * specific data field of the given record (entry) in the data table.
+   * specific data field of the given record (entry) in the data collection.
    * The `merge` flag is optional as well, and it serves when setting
-   * entries (records) in a table, (e.g. using the `tableName/:rowId` key variant),
+   * entries (records) in a collection, (e.g. using the `collectionName/:recId` key variant),
    * to indicate whether to merge the new fields with the existing fields
-   * of the identified record in the table, or to replace all its existing
+   * of the identified record in the collection, or to replace all its existing
    * fields with the new ones. By default `merge` is `false`, which means
    * that the new data fields passed as `value`  replace the existing ones.
    *
@@ -169,39 +169,39 @@ export class DataStore {
    */
   set(key: string, value: any, merge?: boolean) {
     const keys = key.split('/');
-    const [tableName, entryId, typeField] = [
+    const [collectionName, entryId, typeField] = [
       (keys[0] as string)?.trim(),
       (keys[1] as string)?.trim(),
       (keys[2] as string)?.replace('/', '_')?.trim()
     ];
 
-    if (typeField && entryId && tableName) {
+    if (typeField && entryId && collectionName) {
       // set the field
-      const table = this._tables.get(tableName) || {} as TDataTableEntry;
-      const entry = table[entryId] || new DataTypeMap({}, entryId);
+      const collection = this.#collections.get(collectionName) || {} as TDataCollectionEntry;
+      const entry = collection[entryId] || new DataRecord({}, entryId);
 
       entry.set(typeField, value);
-      table[entryId] = entry;
-      this._tables.set(tableName, table);
+      collection[entryId] = entry;
+      this.#collections.set(collectionName, collection);
       this.emitChange({ type: 'set', key, value: this.get(key) });
-    } else if (entryId && tableName && value instanceof Object) {
+    } else if (entryId && collectionName && value instanceof Object) {
       // set the type by id
-      const table = this._tables.get(tableName) || {} as TDataTableEntry;
-      const entry = table[entryId] && merge ? new DataTypeMap({
-        ...table[entryId]?.toJSON(),
+      const collection = this.#collections.get(collectionName) || {} as TDataCollectionEntry;
+      const entry = collection[entryId] && merge ? new DataRecord({
+        ...collection[entryId]?.toJSON(),
         ...value
-      }, entryId) : new DataTypeMap({ ...value }, entryId);
+      }, entryId) : new DataRecord({ ...value }, entryId);
 
-      table[entryId] = entry;
-      this._tables.set(tableName, table);
+      collection[entryId] = entry;
+      this.#collections.set(collectionName, collection);
       this.emitChange({ type: 'set', key, value: this.get(key) });
-    } else if (tableName && value instanceof Object) {
-      // set the table
-      const table = this._tables.get(tableName) || {} as TDataTableEntry;
-      const entry = new DataTypeMap({ ...value }, value?.id || value?.uuid);
+    } else if (collectionName && value instanceof Object) {
+      // set the collection
+      const collection = this.#collections.get(collectionName) || {} as TDataCollectionEntry;
+      const entry = new DataRecord({ ...value }, value?.id || value?.uuid);
 
-      table[entry.uuid] = entry;
-      this._tables.set(tableName, table);
+      collection[entry.uuid] = entry;
+      this.#collections.set(collectionName, collection);
       this.emitChange({ type: 'set', key, value: this.get(key) });
     } else if (value instanceof Object) {
       this.deserialize(value as TDataStoreContent);
@@ -211,20 +211,20 @@ export class DataStore {
   }
 
   /**
-   * Gets (retrieves) the data of the table, record or the field identified
+   * Gets (retrieves) the data of the collection, record or the field identified
    * by the given key in the store.
-   * The key is a string in this `tableName/:rowId/:fieldName` format,
-   * where the `tableName` is required and is the table identifier.
-   * The `rowId`, which is optional, is the identifier of the record (row)
-   * in the table, and the `fieldName`, optional as well, is the identifier
-   * of a particular field of the given record (row) in the table.
-   * If the given key only contains the `tableName` it returns all the data
-   * from the table identified. If the given key only contains the `tableName` and
-   * the `rowId` it returns the data of the identified row (record) in the table.
-   * If the given key only all three components, the `tableName`, the `rowId` and
-   * `fieldName`it returns the value of the named field in the identified row
-   * (record) in the table.
-   * If the key does not identify any table, record or field in the store,
+   * The key is a string in this `collectionName/:recId/:fieldName` format,
+   * where the `collectionName` is required and is the collection identifier.
+   * The `recId`, which is optional, is the identifier of the record (entry)
+   * in the collection, and the `fieldName`, optional as well, is the identifier
+   * of a particular field of the given record (entry) in the collection.
+   * If the given key only contains the `collectionName` it returns all the data
+   * from the collection identified. If the given key only contains the `collectionName` and
+   * the `recId` it returns the data of the identified record (entry) in the collection.
+   * If the given key only all three components, the `collectionName`, the `recId` and
+   * `fieldName`it returns the value of the named field in the identified record (entry)
+   * in the collection.
+   * If the key does not identify any collection, record or field in the store,
    * it returns `undefined`.
    *
    * @param {string} key
@@ -233,42 +233,42 @@ export class DataStore {
    */
   get(key: string) {
     const keys = key.split('/');
-    const [tableName, entryId, typeField] = [
+    const [collectionName, entryId, typeField] = [
       (keys[0] as string)?.trim(),
       (keys[1] as string)?.trim(),
       (keys[2] as string)?.replace('/', '_')?.trim()
     ];
 
-    if (!tableName.length || tableName === '*') {
+    if (!collectionName.length || collectionName === '*') {
       return this.serialize();
-    } else if (typeField && entryId && tableName) {
+    } else if (typeField && entryId && collectionName) {
       // get the field
-      const table = this._tables.get(tableName) || {} as TDataTableEntry;
-      return table?.[entryId]?.get(typeField) as any;
-    } else if (entryId && tableName) {
+      const collection = this.#collections.get(collectionName) || {} as TDataCollectionEntry;
+      return collection?.[entryId]?.get(typeField) as any;
+    } else if (entryId && collectionName) {
       // get the type by id
-      const table = this._tables.get(tableName) || {} as TDataTableEntry;
-      return table?.[entryId]?.toJSON() as object;
-    } else if (tableName) {
-      // get the table
-      const table = this._tables.get(tableName) || {} as TDataTableEntry;
-      const tableData = {} as any;
-      Object.entries(table).forEach(([key, value]) => {
-        tableData[key] = value instanceof DataTypeMap ? value.toJSON() : value;
+      const collection = this.#collections.get(collectionName) || {} as TDataCollectionEntry;
+      return collection?.[entryId]?.toJSON() as object;
+    } else if (collectionName) {
+      // get the collection
+      const collection = this.#collections.get(collectionName) || {} as TDataCollectionEntry;
+      const collectionData = {} as any;
+      Object.entries(collection).forEach(([key, value]) => {
+        collectionData[key] = value instanceof DataRecord ? value.toJSON() : value;
       });
-      return tableData as object;
+      return collectionData as object;
     }
   }
 
   /**
-   * Returns `true` if the store has a table, a table record or a table
+   * Returns `true` if the store has a collection, a collection record or a collection
    * record field that is identified by the given key.
-   * The key is a string in this `tableName/:rowId/:fieldName` format,
-   * where the `tableName` is required and is the table identifier.
-   * The `rowId`, which is optional, is the identifier of the record (row)
-   * in the table, and the `fieldName`, optional as well, is the identifier
-   * of a particular field of the given record (row) in the table.
-   * If the key does not identify any table, record or field in the store,
+   * The key is a string in this `collectionName/:recId/:fieldName` format,
+   * where the `collectionName` is required and is the collection identifier.
+   * The `recId`, which is optional, is the identifier of the record (entry)
+   * in the collection, and the `fieldName`, optional as well, is the identifier
+   * of a particular field of the given record (entry) in the collection.
+   * If the key does not identify any collection, record or field in the store,
    * it returns `false`.
    *
    * @param {string} key
@@ -277,36 +277,36 @@ export class DataStore {
    */
   has(key: string) {
     const keys = key.split('/');
-    const [tableName, entryId, typeField] = [
+    const [collectionName, entryId, typeField] = [
       (keys[0] as string)?.trim(),
       (keys[1] as string)?.trim(),
       (keys[2] as string)?.replace('/', '_')?.trim()
     ];
 
-    if (typeField && entryId && tableName) {
+    if (typeField && entryId && collectionName) {
       // get the field
-      const table = this._tables.get(tableName) || {} as TDataTableEntry;
-      return !!(table?.[entryId]?.has(typeField));
-    } else if (entryId && tableName) {
+      const collection = this.#collections.get(collectionName) || {} as TDataCollectionEntry;
+      return !!(collection?.[entryId]?.has(typeField));
+    } else if (entryId && collectionName) {
       // get the type by id
-      const table = this._tables.get(tableName) || {} as TDataTableEntry;
-      return !!(table?.[entryId]);
-    } else if (tableName) {
-      // get the table
-      return this._tables.has(tableName);
+      const collection = this.#collections.get(collectionName) || {} as TDataCollectionEntry;
+      return !!(collection?.[entryId]);
+    } else if (collectionName) {
+      // get the collection
+      return this.#collections.has(collectionName);
     }
     return false;
   }
 
   /**
-   * Deletes from the store the table, record or data field specified by the key,
+   * Deletes from the store the collection, record or data field specified by the key,
    * and returns `true` to indicate that the operation is successful.
-   * The key is a string in this `tableName/:rowId/:fieldName` format,
-   * where the `tableName` is required and is the table identifier.
-   * The `rowId`, which is optional, is the identifier of the record (row)
-   * in the table, and the `fieldName`, optional as well, is the identifier
-   * of a particular field of the given record (row) in the table.
-   * If the key does not identify any table, record or field in the store,
+   * The key is a string in this `collectionName/:recId/:fieldName` format,
+   * where the `collectionName` is required and is the collection identifier.
+   * The `recId`, which is optional, is the identifier of the record (entry)
+   * in the collection, and the `fieldName`, optional as well, is the identifier
+   * of a particular field of the given record (entry) in the collection.
+   * If the key does not identify any collection, record or field in the store,
    * it returns `false`, indicating that nothing was deleted.
    *
    * @param {string} key
@@ -315,7 +315,7 @@ export class DataStore {
    */
   delete(key: string) {
     const keys = key.split('/');
-    const [tableName, entryId, typeField] = [
+    const [collectionName, entryId, typeField] = [
       (keys[0] as string)?.trim(),
       (keys[1] as string)?.trim(),
       (keys[2] as string)?.replace('/', '_')?.trim()
@@ -323,17 +323,17 @@ export class DataStore {
 
     let ret = false;
 
-    if (typeField && entryId && tableName) {
+    if (typeField && entryId && collectionName) {
       // delete the field
-      const table = this._tables.get(tableName);
-      ret = !!(table?.[entryId]?.delete(typeField));
-    } else if (entryId && tableName) {
+      const collection = this.#collections.get(collectionName);
+      ret = !!(collection?.[entryId]?.delete(typeField));
+    } else if (entryId && collectionName) {
       // delete the type by id
-      const table = this._tables.get(tableName);
-      ret = !!(delete table?.[entryId]);
-    } else if (tableName) {
-      // delete the table
-      ret = this._tables.delete(tableName);
+      const collection = this.#collections.get(collectionName);
+      ret = !!(delete collection?.[entryId]);
+    } else if (collectionName) {
+      // delete the collection
+      ret = this.#collections.delete(collectionName);
     }
     if (ret) {
       this.emitChange({ type: 'delete', key, value: this.get(key) });
@@ -342,11 +342,11 @@ export class DataStore {
   }
 
   /**
-   * Clears the table or table record identified by key in the store.
-   * The key is a string in a format like `tableName/:rowId`,
-   * where the `tableName` is the identifier of a table in the store,
-   * while the `rowId` identifies a specific record (entry) in the
-   * data table.
+   * Clears the collection or collection record identified by key in the store.
+   * The key is a string in a format like `collectionName/:recId`,
+   * where the `collectionName` is the identifier of a collection in the store,
+   * while the `recId` identifies a specific record (entry) in the
+   * data collection.
    *
    * @param {string} key
    * @returns
@@ -354,34 +354,34 @@ export class DataStore {
    */
   clear(key: string) {
     const keys = key.split('/');
-    const [tableName, entryId] = [
+    const [collectionName, entryId] = [
       (keys[0] as string)?.trim(),
       (keys[1] as string)?.trim()
     ];
 
-    if (!tableName.length || tableName === '*') {
-      this._tables.clear();
+    if (!collectionName.length || collectionName === '*') {
+      this.#collections.clear();
       this.emitChange({ type: 'delete', key, value: this.get(key) });
-    } else if (entryId && tableName) {
+    } else if (entryId && collectionName) {
       // clear the type by id
-      const table = this._tables.get(tableName);
-      table?.[entryId]?.clear();
+      const collection = this.#collections.get(collectionName);
+      collection?.[entryId]?.clear();
       this.emitChange({ type: 'delete', key, value: this.get(key) });
-    } else if (tableName) {
-      // clear the table
-      this._tables.set(tableName, {});
+    } else if (collectionName) {
+      // clear the collection
+      this.#collections.set(collectionName, {});
       this.emitChange({ type: 'delete', key, value: this.get(key) });
     }
     return this;
   }
 
   /**
-   * Returns an iterator with all entries of the table or record identified
+   * Returns an iterator with all entries of the collection or record identified
    * by the key in the store.
-   * The key is a string in a format like `tableName/:rowId`,
-   * where the `tableName` is the identifier of a table in the store,
-   * while the `rowId` identifies a specific record (entry) in the
-   * data table.
+   * The key is a string in a format like `collectionName/:recId`,
+   * where the `collectionName` is the identifier of a collection in the store,
+   * while the `recId` identifies a specific record (entry) in the
+   * data collection.
    *
    * @param {string} key
    * @returns
@@ -389,49 +389,49 @@ export class DataStore {
    */
   entries(key: string) {
     const keys = key.split('/');
-    const [tableName, entryId] = [
+    const [collectionName, entryId] = [
       (keys[0] as string)?.trim(),
       (keys[1] as string)?.trim()
     ];
 
-    if (entryId && tableName) {
+    if (entryId && collectionName) {
       // entries the type by id
-      const table = this._tables.get(tableName);
-      return table?.[entryId] && Object.entries(table?.[entryId].toJSON());
-    } else if (tableName) {
-      // entries the table
-      const table = this._tables.get(tableName) || {} as TDataTableEntry;
-      const tableData = {} as any;
-      Object.entries(table).forEach(([key, value]) => {
-        tableData[key] = value instanceof DataTypeMap ? value.toJSON() : value;
+      const collection = this.#collections.get(collectionName);
+      return collection?.[entryId] && Object.entries(collection?.[entryId].toJSON());
+    } else if (collectionName) {
+      // entries the collection
+      const collection = this.#collections.get(collectionName) || {} as TDataCollectionEntry;
+      const collectionData = {} as any;
+      Object.entries(collection).forEach(([key, value]) => {
+        collectionData[key] = value instanceof DataRecord ? value.toJSON() : value;
       });
-      return Object.entries(tableData);
+      return Object.entries(collectionData);
     }
   }
 
   /**
-   * Returns the data table object with the given name, or `undefined`
-   * if the table does not exist in the store.
+   * Returns the data collection object with the given name, or `undefined`
+   * if the collection does not exist in the store.
    *
    * @param {string} name
    * @returns
    * @memberof DataStore
    */
-  table(name: string) {
-    return this._tables.get(name);
+  collection(name: string) {
+    return this.#collections.get(name);
   }
 
   /**
-   * Returns an array containing the names of all data tables in the store.
+   * Returns an array containing the names of all data collections in the store.
    */
-  get tables() {
-    const tables = [] as string[];
-    const itr = this._tables.keys();
+  get collections() {
+    const collections = [] as string[];
+    const itr = this.#collections.keys();
 
-    for (let i = 0; i < this._tables.size; i++) {
-      tables.push(itr.next().value);
+    for (let i = 0; i < this.#collections.size; i++) {
+      collections.push(itr.next().value);
     }
-    return tables;
+    return collections;
   }
 }
 export default DataStore;

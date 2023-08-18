@@ -1,7 +1,7 @@
 {
   "name": "kv-store-db",
-  "version": "1.0.1",
-  "description": "A fast, easy-to-use, and lightweight in-memory key-value datastore for node.js",
+  "version": "1.1.0",
+  "description": "A fast, lightweight, and easy-to-use in-memory and in-process key-value datastore for node.js",
   "main": "dist/index.js",
   "scripts": {
     "prebuild": "npm run clean",

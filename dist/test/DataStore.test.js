@@ -17,25 +17,25 @@ const sample_json_1 = __importDefault(require("./data/sample.json"));
 describe('DataStore', () => {
     it('initializes with default args', () => __awaiter(void 0, void 0, void 0, function* () {
         const store = new main_1.DataStore({});
-        expect(store.tables).toEqual([]);
+        expect(store.collections).toEqual([]);
     }));
     it('initializes with sample data args', () => __awaiter(void 0, void 0, void 0, function* () {
         const store = new main_1.DataStore({ data: sample_json_1.default });
-        expect(store.tables).toEqual(['users', 'posts']);
+        expect(store.collections).toEqual(['users', 'posts']);
     }));
-    it('gets the tables', () => __awaiter(void 0, void 0, void 0, function* () {
+    it('gets the collections', () => __awaiter(void 0, void 0, void 0, function* () {
         const store = new main_1.DataStore({ data: sample_json_1.default });
-        expect(store.tables).toEqual(['users', 'posts']);
-        expect(store.table('users')).toMatchObject({
-            'user1': new main_1.DataTypeMap({
+        expect(store.collections).toEqual(['users', 'posts']);
+        expect(store.collection('users')).toMatchObject({
+            'user1': new main_1.DataRecord({
                 "id": "user1",
                 "fName": "Luke",
                 "lName": "Skywalker",
                 "age": 30
             }, 'user1')
         });
-        expect(store.table('users')).toMatchObject({
-            'user2': new main_1.DataTypeMap({
+        expect(store.collection('users')).toMatchObject({
+            'user2': new main_1.DataRecord({
                 "id": "user2",
                 "fName": "Obi Wan",
                 "lName": "Kenobi",
@@ -45,15 +45,15 @@ describe('DataStore', () => {
                 ]
             }, 'user2')
         });
-        expect(store.table('posts')).toMatchObject({
-            "post1": new main_1.DataTypeMap({
+        expect(store.collection('posts')).toMatchObject({
+            "post1": new main_1.DataRecord({
                 "id": "post1",
                 "userId": "user1",
                 "content": "Hello"
             }, 'post1')
         });
-        expect(store.table('posts')).toMatchObject({
-            "post2": new main_1.DataTypeMap({
+        expect(store.collection('posts')).toMatchObject({
+            "post2": new main_1.DataRecord({
                 "id": "post2",
                 "userId": "user2",
                 "content": "Howdy!",
@@ -103,7 +103,7 @@ describe('DataStore', () => {
         });
         expect(store.get('posts/post3')).toBeUndefined();
     }));
-    it('gets tables by keys', () => __awaiter(void 0, void 0, void 0, function* () {
+    it('gets collections by keys', () => __awaiter(void 0, void 0, void 0, function* () {
         const store = new main_1.DataStore({ data: sample_json_1.default });
         expect(store.get('users')).toMatchObject({
             'user1': {
@@ -274,7 +274,7 @@ describe('DataStore', () => {
             "peers": []
         });
     }));
-    it('sets tables by keys', () => __awaiter(void 0, void 0, void 0, function* () {
+    it('sets collections by keys', () => __awaiter(void 0, void 0, void 0, function* () {
         const store = new main_1.DataStore({ data: sample_json_1.default });
         expect(store.get('users')).toMatchObject({
             'user1': {
@@ -307,7 +307,7 @@ describe('DataStore', () => {
             }
         });
         expect(store.get('likes')).toMatchObject({});
-        expect(store.tables).toMatchObject(['users', 'posts']);
+        expect(store.collections).toMatchObject(['users', 'posts']);
         store.set('likes/like1', {
             'id': 'like1',
             'post': 'post1'
@@ -348,7 +348,7 @@ describe('DataStore', () => {
                 'post': 'post1'
             }
         });
-        expect(store.tables).toMatchObject(['users', 'posts', 'likes']);
+        expect(store.collections).toMatchObject(['users', 'posts', 'likes']);
     }));
     it('has values by keys', () => __awaiter(void 0, void 0, void 0, function* () {
         const store = new main_1.DataStore({ data: sample_json_1.default });
@@ -366,7 +366,7 @@ describe('DataStore', () => {
         expect(store.has('posts/post1')).toBe(true);
         expect(store.has('posts/post3')).toBe(false);
     }));
-    it('has tables by keys', () => __awaiter(void 0, void 0, void 0, function* () {
+    it('has collections by keys', () => __awaiter(void 0, void 0, void 0, function* () {
         const store = new main_1.DataStore({ data: sample_json_1.default });
         expect(store.has('users')).toBe(true);
         expect(store.has('posts')).toBe(true);
@@ -411,7 +411,7 @@ describe('DataStore', () => {
         expect(store.has('posts/post1')).toBe(true);
         expect(store.has('posts/post3')).toBe(false);
     }));
-    it('deletes tables by keys', () => __awaiter(void 0, void 0, void 0, function* () {
+    it('deletes collections by keys', () => __awaiter(void 0, void 0, void 0, function* () {
         const store = new main_1.DataStore({ data: sample_json_1.default });
         expect(store.has('users')).toBe(true);
         expect(store.has('posts')).toBe(true);
@@ -454,7 +454,7 @@ describe('DataStore', () => {
         });
         expect(store.has('likes/like1')).toBe(false);
     }));
-    it('clears tables by keys', () => __awaiter(void 0, void 0, void 0, function* () {
+    it('clears collections by keys', () => __awaiter(void 0, void 0, void 0, function* () {
         const store = new main_1.DataStore({ data: sample_json_1.default });
         expect(store.get('users')).toMatchObject({
             'user1': {
@@ -554,7 +554,7 @@ describe('DataStore', () => {
         ]);
         expect(store.entries('likes/likes1')).toBeUndefined();
     }));
-    it('gets table entries by keys', () => __awaiter(void 0, void 0, void 0, function* () {
+    it('gets collection entries by keys', () => __awaiter(void 0, void 0, void 0, function* () {
         const store = new main_1.DataStore({ data: sample_json_1.default });
         expect(store.entries('users')).toMatchObject([
             [
