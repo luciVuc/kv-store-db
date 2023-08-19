@@ -24,6 +24,7 @@
     "db",
     "kvdb",
     "in-memory",
+    "in-process",
     "store",
     "database",
     "kv store",
