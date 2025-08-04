@@ -1,18 +1,19 @@
 {
   "name": "kv-store-db",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "A fast, lightweight, and easy-to-use in-memory and in-process key-value datastore for node.js",
   "main": "dist/index.js",
   "scripts": {
     "prebuild": "npm run clean",
     "build": "tsc",
     "clean": "rimraf ./data && rimraf ./dist",
-    "start:dev": "npm run clean && ts-node-dev --respawn --transpile-only ./src/index.ts",
+    "start:dev": "npm run clean && ts-node-dev --respawn --transpile-only ./src/demo.ts",
     "start": "node .",
     "prestart": "npm run clean && npm run build",
-    "test:dev": "jest --detectOpenHandles ./src/*",
-    "test": "npm run build && jest --detectOpenHandles ./dist/*",
+    "test": "jest --detectOpenHandles ./src/*",
+    "demo": "npm run build && node ./dist/demo.js",
     "restart": "npm start",
+    "postinstall": "npm run build",
     "prod": "npm run build && npm run start"
   },
   "repository": {

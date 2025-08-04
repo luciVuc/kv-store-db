@@ -94,6 +94,9 @@
     "src/**/*"
   ],
   "exclude": [
+    "dist",
+    "node_modules",
+    "src/test",
     "src/types/*.ts",
     "node_modules"
   ]

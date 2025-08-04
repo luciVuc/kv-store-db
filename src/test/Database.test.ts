@@ -20,7 +20,12 @@ describe('Database', () => {
     });
     expect(db).not.toBeUndefined();
     expect(db.collections.length).toBe(0);
-    await rm(join(__dirname, 'data/none.json'));
+    try {
+      await rm(join(__dirname, 'data/none.json'));
+      expect(false).toBe(true); // Should not reach here
+    } catch (error) {
+      expect(true).toBe(true); // File should not exist
+    }
   });
 
   it('instance is singleton', async () => {
