@@ -29,6 +29,45 @@ exports.DataCollectionMap = DataCollectionMap;
  */
 class DataStore {
     /**
+     * Returns the entire store data as a JSON object.
+     *
+     * @private
+     * @returns
+     * @memberof DataStore
+     */
+    serialize() {
+        const data = {};
+        this.collections.forEach((tbl) => {
+            data[tbl] = {};
+            Object.entries(__classPrivateFieldGet(this, _DataStore_collections, "f").get(tbl) || {}).forEach(([key, value]) => {
+                data[tbl][key] = value instanceof DataRecord_1.DataRecord ? value.toJSON() : value;
+            });
+        });
+        return data;
+    }
+    /**
+     * Deserializes the data given as JSON object, and uses it
+     * to initialize or update the internal `collections` map.
+     *
+     * @private
+     * @param {TDataStoreContent} [data] Data to deserialize into the store
+     * @returns {this} The DataStore instance for chaining
+     * @memberof DataStore
+     */
+    deserialize(data) {
+        if (data) {
+            // TODO: improve performance
+            Object.entries(data).forEach(([collectionName, collection]) => {
+                Object.entries(collection).forEach(([entryId, entry]) => {
+                    Object.entries(entry).forEach(([fieldName, value]) => {
+                        this.set(`${collectionName}/${entryId}/${fieldName}`, value);
+                    });
+                });
+            });
+        }
+        return this;
+    }
+    /**
      *Creates an instance of DataStore.
      * @param {IDataStoreProps} { data } Initialization properties.
      * @param {object} props.data  A JSON object containing initial data as `collections`,
@@ -63,45 +102,6 @@ class DataStore {
         _DataStore_eventEmitter.set(this, new events_1.EventEmitter());
         _DataStore_collections.set(this, new DataCollectionMap());
         this.deserialize(data);
-    }
-    /**
-     * Returns the entire store data as a JSON object.
-     *
-     * @private
-     * @returns
-     * @memberof DataStore
-     */
-    serialize() {
-        const data = {};
-        this.collections.forEach((tbl, x) => {
-            data[tbl] = {};
-            Object.entries(__classPrivateFieldGet(this, _DataStore_collections, "f").get(tbl) || {}).forEach(([key, value]) => {
-                data[tbl][key] = value instanceof DataRecord_1.DataRecord ? value.toJSON() : value;
-            });
-        });
-        return data;
-    }
-    /**
-     * Deserializes the data given as JSON object, and uses it
-     * to initialize or update the internal `collections` map.
-     *
-     * @private
-     * @param {TDataStoreContent} [data]
-     * @returns
-     * @memberof DataStore
-     */
-    deserialize(data) {
-        if (data) {
-            // TODO: improve performance
-            Object.entries(data).forEach(([collectionName, collection]) => {
-                Object.entries(collection).forEach(([entryId, entry]) => {
-                    Object.entries(entry).forEach(([fieldName, value]) => {
-                        this.set(`${collectionName}/${entryId}/${fieldName}`, value);
-                    });
-                });
-            });
-        }
-        return this;
     }
     /**
      * Adds the 'onChange' `listener` to the listeners array.
@@ -428,8 +428,11 @@ class DataStore {
     get collections() {
         const collections = [];
         const itr = __classPrivateFieldGet(this, _DataStore_collections, "f").keys();
-        for (let i = 0; i < __classPrivateFieldGet(this, _DataStore_collections, "f").size; i++) {
-            collections.push(itr.next().value);
+        for (let i = 0, value; i < __classPrivateFieldGet(this, _DataStore_collections, "f").size; i++) {
+            value = itr.next().value;
+            if (typeof value === 'string') {
+                collections.push(value);
+            }
         }
         return collections;
     }

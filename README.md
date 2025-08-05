@@ -15,9 +15,9 @@ To use `kv-store-db`:
 ### Import `kv-store-db` library
 
 ```js
-const { createDatabase } = require('kv-store-db'); // ES/JS
+const { createDatabase } = require('kv-store-db'); // CommonJS
 // or
-import { createDatabase } from 'kv-store-db'; // Typescript
+import { createDatabase } from 'kv-store-db'; // ES Modules / TypeScript
 ```
 
 ### Create an instance
@@ -33,7 +33,7 @@ const db = createDatabase({
 ### Example
 
 ```js
-import { createDatabase } from './main';
+import { createDatabase } from 'kv-store-db';
 import { join } from 'path';
 
 interface IUser {
@@ -160,7 +160,7 @@ If the key contains all three components, it is assumed to refer to a
 specific data field of the given record (entry) in the data collection.
 
 The `merge` flag is optional as well, and it serves when setting
-entries (records) in a collection, (e.g. using the `collectionName/:recId` key variant), to indicate whether to merge the new fields with the existing fields of the identified record in the collection, or to replace all its existing fields with the new ones. By default `merge` is `false`, which means that the new data fields passed as `value`  replace the existing ones.
+entries (records) in a collection, (e.g. using the `collectionName/:recId` key variant). It indicates whether to merge the new fields with the existing fields of the identified record in the collection, or to replace all its existing fields with the new ones. By default, `merge` is `false`. This means that the new data fields passed as `value` replace the existing ones.
 
 ---
 
@@ -183,7 +183,7 @@ of a particular field of the given record (entry) in the collection.
 If the given key only contains the `collectionName` it returns all the data
 from the collection identified. If the given key only contains the `collectionName` and the `recId` it returns the data of the identified record (entry) in the collection.
 
-If the given key only all three components, the `collectionName`, the `recId` and `fieldName`it returns the value of the named field in the identified record (entry) in the collection.
+If the given key contains all three components, the `collectionName`, the `recId` and `fieldName`, it returns the value of the named field in the identified record (entry) in the collection.
 
 If the key does not identify any collection, record or field in the store,
 it returns `undefined`.

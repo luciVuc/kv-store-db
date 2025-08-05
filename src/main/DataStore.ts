@@ -30,7 +30,7 @@ export class DataStore {
    */
   private serialize() {
     const data = {} as any;
-    this.collections.forEach((tbl, x) => {
+    this.collections.forEach((tbl) => {
       data[tbl] = {};
       Object.entries(this.#collections.get(tbl) || {} as TDataCollectionEntry).forEach(([key, value]) => {
         data[tbl][key] = value instanceof DataRecord ? value.toJSON() : value;
@@ -42,10 +42,10 @@ export class DataStore {
   /**
    * Deserializes the data given as JSON object, and uses it
    * to initialize or update the internal `collections` map.
-   *
+   * 
    * @private
-   * @param {TDataStoreContent} [data]
-   * @returns
+   * @param {TDataStoreContent} [data] Data to deserialize into the store
+   * @returns {this} The DataStore instance for chaining
    * @memberof DataStore
    */
   private deserialize(data?: TDataStoreContent) {
@@ -428,8 +428,11 @@ export class DataStore {
     const collections = [] as string[];
     const itr = this.#collections.keys();
 
-    for (let i = 0; i < this.#collections.size; i++) {
-      collections.push(itr.next().value);
+    for (let i = 0, value; i < this.#collections.size; i++) {
+      value = itr.next().value;
+      if (typeof value === 'string') {
+        collections.push(value);
+      }
     }
     return collections;
   }

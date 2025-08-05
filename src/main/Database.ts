@@ -9,15 +9,23 @@ import { DataStore } from './DataStore';
  *
  * @export
  * @param {IDatabaseProps} { name, path, onChange }
- * @returns
+ * @param {string} name - The name of the database file
+ * @param {string} path - The path where the database file will be stored
+ * @param {Function} [onChange] - Optional callback that will be called when data changes
+ * @returns {Promise<IDatabase>} A promise that resolves to the database instance
  */
 export async function initDatabase({ name, path, onChange }: IDatabaseProps) {
   let store: DataStore;
   const dataFile = join(path, `${name}.json`);
 
   const loadData = async (): Promise<object> => {
-    const data = await readFile(dataFile, 'utf-8');
-    return JSON.parse(data) as object;
+    try {
+      const data = await readFile(dataFile, 'utf-8');
+      return JSON.parse(data) as object;
+    } catch (error) {
+      console.error(`Error loading data from ${dataFile}:`, error);
+      return {};
+    }
   };
 
   try {

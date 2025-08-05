@@ -7,15 +7,16 @@ declare type TDataRecord = {
 };
 
 /**
- * A map of data records (`TDataRecord`), which represents a single
- * entry in a Data Collection.
+ * A map of data records (`TDataRecord`), which represents entries
+ * in a Data Collection, indexed by their record ID.
  */
 declare type TDataCollectionEntry = {
   [recId: string]: TDataRecord;
 }
 
 /**
- * A map of data collection entries (`TDataCollectionEntry`).
+ * A map of data collection entries (`TDataCollectionEntry`), representing
+ * the entire database content, indexed by collection names.
  */
 declare type TDataStoreContent = {
   [collectionName: string]: TDataCollectionEntry;

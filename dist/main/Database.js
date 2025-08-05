@@ -20,15 +20,24 @@ const DataStore_1 = require("./DataStore");
  *
  * @export
  * @param {IDatabaseProps} { name, path, onChange }
- * @returns
+ * @param {string} name - The name of the database file
+ * @param {string} path - The path where the database file will be stored
+ * @param {Function} [onChange] - Optional callback that will be called when data changes
+ * @returns {Promise<IDatabase>} A promise that resolves to the database instance
  */
 function initDatabase({ name, path, onChange }) {
     return __awaiter(this, void 0, void 0, function* () {
         let store;
         const dataFile = (0, path_1.join)(path, `${name}.json`);
         const loadData = () => __awaiter(this, void 0, void 0, function* () {
-            const data = yield (0, promises_1.readFile)(dataFile, 'utf-8');
-            return JSON.parse(data);
+            try {
+                const data = yield (0, promises_1.readFile)(dataFile, 'utf-8');
+                return JSON.parse(data);
+            }
+            catch (error) {
+                console.error(`Error loading data from ${dataFile}:`, error);
+                return {};
+            }
         });
         try {
             yield (0, promises_1.access)(dataFile, fs_1.constants.R_OK | fs_1.constants.W_OK);
